@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Admin Page</title>
+    <link rel="stylesheet" type="text/css" href="/style.css">
+</head>
+<body>
+    <div id="content">
+        <h1>Welcome, Admin!</h1>
+        <ul>
+            <li th:each="user : ${users}">
+                <span th:text="${user}"></span>
+            </li>
+        </ul>
+    </div>
+</body>
+</html>
