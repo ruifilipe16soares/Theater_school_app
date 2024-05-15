@@ -3,6 +3,8 @@
 ### Info:
 __Comando para correr:__ mvn spring-boot:run
 
+---
+
 ### Enunciado:
 #### Trabalho Prático – Aplicação Web em Jakarta EE, usando a framework Spring
 
