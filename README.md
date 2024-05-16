@@ -2,6 +2,7 @@
 
 ### Info:
 __Comando para correr:__ mvn spring-boot:run
+__Comando para download da ultima versao:__ git pull origin main
 
 ---
 
