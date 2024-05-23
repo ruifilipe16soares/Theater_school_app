@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import myspringtest.demo.School;
-import myspringtest.demo.User;
+import myspringtest.demo.Person;
 
 @Controller
 public class WebController {
@@ -16,7 +16,7 @@ public class WebController {
 
     public WebController() {
         this.school = new School();
-        this.school.addUser(new User("admin", 0, 0, "admin@admin", "admin"));
+        this.school.addUser(new Person("admin", 0, 0, "admin@admin", "admin"));
     }
 
     @GetMapping("/")
@@ -31,7 +31,7 @@ public class WebController {
 
     @PostMapping("/login")
     public ModelAndView login(@RequestParam String email, @RequestParam String password) {
-        for (User user : school.getUsers()) {
+        for (Person user : school.getUsers()) {
             System.out.println(school.toString());
             if (user.getEmail().equals(email) && user.getPassword().equals(password)) {
                 if (user.getUserType() == 0) {

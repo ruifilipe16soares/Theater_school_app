@@ -1,6 +1,6 @@
 package myspringtest.demo;
 
-public class User {
+public class Person {
 
     private static int nextId = 1;
 
@@ -11,7 +11,7 @@ public class User {
     private int age;
     private int userType;
 
-    public User(String name, int age, int userType, String email, String password) {
+    public Person(String name, int age, int userType, String email, String password) {
         this.id = nextId++;
         this.name = name;
         this.age = age;

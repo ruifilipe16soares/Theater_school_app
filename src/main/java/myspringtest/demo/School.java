@@ -4,24 +4,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class School {
-    private List<User> users;
+    private List<Person> users;
 
     public School() {
         this.users = new ArrayList<>();
     }
 
-    public void addUser(User user) {
+    public void addUser(Person user) {
         this.users.add(user);
     }
 
-    public List<User> getUsers() {
+    public List<Person> getUsers() {
         return users;
     }
 
     //toString users
     public String toString() {
         String result = "";
-        for (User user : users) {
+        for (Person user : users) {
             result += user.toString() + "\n";
         }
         return result;
