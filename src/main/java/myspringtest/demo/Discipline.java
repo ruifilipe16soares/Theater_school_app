@@ -1,8 +1,6 @@
-package myspringtest;
+package myspringtest.demo;
 
 import java.util.ArrayList;
-
-import myspringtest.demo.Professor;
 
 public class Discipline {
     private String name;

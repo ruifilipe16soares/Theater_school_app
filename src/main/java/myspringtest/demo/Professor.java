@@ -3,8 +3,6 @@ package myspringtest.demo;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
-import myspringtest.Discipline;
-
 public class Professor extends Person {
 
     private double salary;

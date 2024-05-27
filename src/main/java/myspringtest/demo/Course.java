@@ -1,4 +1,4 @@
-package myspringtest;
+package myspringtest.demo;
 
 import java.util.ArrayList;
 
