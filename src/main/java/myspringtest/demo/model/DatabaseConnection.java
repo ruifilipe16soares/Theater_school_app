@@ -2,9 +2,14 @@ package myspringtest.demo.model;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
+import myspringtest.demo.User;
 
 public class DatabaseConnection {
 
@@ -57,7 +62,7 @@ public class DatabaseConnection {
             }
         }
     
-        public int getUsers() throws SQLException {
+        public int getCountUsers() throws SQLException {
             // Establish connection to the database
             int count = 0;
             // Create a statement to execute SQL query
@@ -81,6 +86,70 @@ public class DatabaseConnection {
                         + ", Email: " + email + ", Password: " + password);
             }
             return count;
+        } 
+
+/*         public int getTotalUsers() throws SQLException {
+            // Create a statement to execute SQL query
+            statement = connection.createStatement();
+        
+            // Execute SQL query to get the count of rows in dbo.Users
+            String query = "SELECT COUNT(*) FROM dbo.Users";
+            ResultSet resultSet = statement.executeQuery(query);
+        
+            // Get the count from the first row of the result set
+            if (resultSet.next()) {
+                return resultSet.getInt(1);
+            }
+        
+            // If the result set is empty, return 0
+            return 0;
+        } */
+
+        public List<User> getUsers() throws SQLException {
+            List<User> users = new ArrayList<>();
+            statement = connection.createStatement();
+            String query = "SELECT * FROM dbo.Users";
+            ResultSet resultSet = statement.executeQuery(query);
+        
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                String name = resultSet.getString("name");
+                int age = resultSet.getInt("age");
+                String usertype = resultSet.getString("usertype");
+                String email = resultSet.getString("email");
+                String password = resultSet.getString("password");
+        
+                User user = new User(name, age, usertype, email, password, id);
+                users.add(user);
+            }
+            return users;
+        }
+
+        public List<String> usersToString() throws SQLException {
+            // Establish connection to the database
+            List<String> users = new ArrayList<>();
+            // Create a statement to execute SQL query
+            statement = connection.createStatement();
+        
+            // Execute SQL query to get data from dbo.Users
+            String query = "SELECT * FROM dbo.Users";
+            ResultSet resultSet = statement.executeQuery(query);
+        
+            while (resultSet.next()) {
+                // Get user data from the result set
+                String name = resultSet.getString("name");
+                int age = resultSet.getInt("age");
+                String usertype = resultSet.getString("usertype");
+                String email = resultSet.getString("email");
+        
+                // Create a string representation of the user
+                String user = "[" + usertype.substring(0, 1).toUpperCase() + usertype.substring(1) + "] Nome: " + name 
+                        + " | Email: " + email + " | Idade: " + age;
+        
+                // Add the user string to the list
+                users.add(user);
+            }
+            return users;
         }
         
         public void addUser(int id, String name, int age, String usertype, String email, String password)
@@ -92,11 +161,22 @@ public class DatabaseConnection {
             statement.executeUpdate(query);
         }
 
-        public void deleteUser(int id) throws SQLException {
-            statement = connection.createStatement();
-            String query = String.format("DELETE FROM dbo.Users WHERE id = %d", id);
-            statement.executeUpdate(query);
+        public void deleteUser(int id) {
+            String query = "DELETE FROM dbo.Users WHERE id = ?";
+            try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+                preparedStatement.setInt(1, id);
+                int affectedRows = preparedStatement.executeUpdate();
+                if (affectedRows == 0) {
+                    System.out.println("No user found with id: " + id);
+                } else {
+                    System.out.println("User with id: " + id + " was deleted successfully.");
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                System.out.println("Error occurred while deleting user with id: " + id);
+            }
         }
+
 
         public void updateUser(int id, String name, int age, String usertype, String email, String password)
                 throws SQLException {
@@ -107,7 +187,7 @@ public class DatabaseConnection {
             statement.executeUpdate(query);
         }
     
-    public boolean  checkUser(String email, String password) throws SQLException {
+    public boolean checkUser(String email, String password) throws SQLException {
         statement = connection.createStatement();
         String query = String.format("SELECT * FROM dbo.Users WHERE email = '%s' AND password = '%s'", email, password);
         ResultSet resultSet = statement.executeQuery(query);
@@ -117,11 +197,35 @@ public class DatabaseConnection {
             return false;
         }
     }
+
+    public String checkType(String email, String password) throws SQLException {
+        statement = connection.createStatement();
+        String query = String.format("SELECT usertype FROM dbo.Users WHERE email = '%s' AND password = '%s'", email, password);
+        ResultSet resultSet = statement.executeQuery(query);
+        if (resultSet.next()) {
+            return resultSet.getString("usertype");
+        } else {
+            return null;
+        }
+    }
+
+    public int getMaxUserId() throws SQLException {
+        String query = "SELECT MAX(id) AS max_id FROM dbo.Users";
+        ResultSet rs = statement.executeQuery(query);
+        if (rs.next()) {
+            return rs.getInt("max_id");
+        } else {
+            return 0;
+        }
+    }
+
     public static void main(String[] args) throws SQLException {
         DatabaseConnection db = new DatabaseConnection();
         Connection connection = db.getConnection();
-        int contador = db.getUsers();
-        db.addUser(5, "Teste", 20, "admin11", "teste5@teste", "teste22");
+        //int contador = db.getUsers();
+        //db.addUser(5, "Teste", 20, "admin11", "teste5@teste", "teste22");
+        //System.out.println(db.checkType("charlie@example.com", "charliepassword"));
+        //db.addUser(6, "Admin", 48, "admin", "admin@admin", "admin");
         //db.deleteUser(3);
         System.out.println("---------------------------------------------------------------------");
         //db.updateUser(4,"Teste2", 80, "user", "alterar@al", "change shit");
@@ -132,6 +236,11 @@ public class DatabaseConnection {
         //boolean c = db.checkUser("bob@example.com", "bobpasswor");
         //System.out.println("o bolean c " + c);
         db.getUsers();
+        //db.deleteUser(2);
+        //print ao getusers
+        System.out.println(db.usersToString());
+        System.out.println("\n");
+        System.out.println(db.getUsers());
         db.closeConnection(connection);
     }
 }

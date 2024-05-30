@@ -6,10 +6,15 @@
 </head>
 <body>
     <div id="content">
-        <h1>Welcome, Admin!</h1>
+        <h1>Página Admin</h1>
+        <h3>Users ----------------------------------- </h3>
         <ul>
             <li th:each="user : ${users}">
                 <span th:text="${user}"></span>
+                <form th:action="@{/deleteUser}" method="post">
+                    <input type="hidden" th:value="${user.id}" name="id"/>
+                    <button class="remove-button" type="submit">Remover</button>
+                </form>
             </li>
         </ul>
     </div>
