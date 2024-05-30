@@ -1,13 +1,16 @@
 package myspringtest.demo.controller;
 
+import java.sql.SQLException;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import myspringtest.demo.School;
 import myspringtest.demo.Person;
+import myspringtest.demo.School;
+import myspringtest.demo.model.DatabaseConnection;
 
 @Controller
 public class WebController {
@@ -16,12 +19,27 @@ public class WebController {
 
     public WebController() {
         this.school = new School();
-        this.school.addUser(new Person("admin", 0, 0, "admin@admin", "admin"));
+        this.school.adduser(new Person("admin", 0, 0, "admin@admin", "admin"));
     }
 
     @GetMapping("/")
     public String home() {
         return "home";
+    }
+
+    @GetMapping("/register")
+    public String register() {
+        return "register";
+    }
+
+
+    @PostMapping("/register")
+    public ModelAndView register(@RequestParam String name, @RequestParam int age, String userType, @RequestParam String email, @RequestParam String password) throws SQLException {
+        DatabaseConnection db = new DatabaseConnection();
+        int total = db.getUsers();
+        total++;
+        db.addUser(total, name, age, "user", email, password);
+        return new ModelAndView("redirect:/register");
     }
 
     @GetMapping("/login")

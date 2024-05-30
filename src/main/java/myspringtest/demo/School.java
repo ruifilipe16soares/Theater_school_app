@@ -10,7 +10,7 @@ public class School {
         this.users = new ArrayList<>();
     }
 
-    public void addUser(Person user) {
+    public void adduser(Person user) {
         this.users.add(user);
     }
 
