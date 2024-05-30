@@ -28,7 +28,7 @@ public class DatabaseConnection {
             
             
             String connectionUrl = String.format(
-                    "jdbc:sqlserver://%s;databaseName=%s;user=%s;password=%s;",
+                    "jdbc:sqlserver://%s;databaseName=%s;user=%s;password=%s;encrypt=true;trustServerCertificate=true;",
                     server, database, username, password);
             try {
                 // Load the JDBC driver
@@ -121,16 +121,16 @@ public class DatabaseConnection {
         DatabaseConnection db = new DatabaseConnection();
         Connection connection = db.getConnection();
         int contador = db.getUsers();
-        //db.addUser(contador, "Teste", 20, "admin", "teste@teste", "teste");
+        db.addUser(5, "Teste", 20, "admin11", "teste5@teste", "teste22");
         //db.deleteUser(3);
         System.out.println("---------------------------------------------------------------------");
         //db.updateUser(4,"Teste2", 80, "user", "alterar@al", "change shit");
-        boolean a = db.checkUser("bob@example.com", "bobpassword");
-        System.out.println("o bolean a " + a);
-        boolean b = db.checkUser("bob1@example.com", "bobpassword");
-        System.out.println("o bolean b " + b);
-        boolean c = db.checkUser("bob@example.com", "bobpasswor");
-        System.out.println("o bolean c " + c);
+        //boolean a = db.checkUser("bob@example.com", "bobpassword");
+        //System.out.println("o bolean a " + a);
+        //boolean b = db.checkUser("bob1@example.com", "bobpassword");
+        //System.out.println("o bolean b " + b);
+        //boolean c = db.checkUser("bob@example.com", "bobpasswor");
+        //System.out.println("o bolean c " + c);
         db.getUsers();
         db.closeConnection(connection);
     }

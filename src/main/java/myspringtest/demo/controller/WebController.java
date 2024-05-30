@@ -1,5 +1,6 @@
 package myspringtest.demo.controller;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 
 import org.springframework.stereotype.Controller;
@@ -36,10 +37,11 @@ public class WebController {
     @PostMapping("/register")
     public ModelAndView register(@RequestParam String name, @RequestParam int age, String userType, @RequestParam String email, @RequestParam String password) throws SQLException {
         DatabaseConnection db = new DatabaseConnection();
+        Connection connection = db.getConnection();
         int total = db.getUsers();
         total++;
         db.addUser(total, name, age, "user", email, password);
-        return new ModelAndView("redirect:/register");
+        return new ModelAndView("redirect:/");
     }
 
     @GetMapping("/login")
@@ -48,17 +50,12 @@ public class WebController {
     }
 
     @PostMapping("/login")
-    public ModelAndView login(@RequestParam String email, @RequestParam String password) {
-        for (Person user : school.getUsers()) {
-            System.out.println(school.toString());
-            if (user.getEmail().equals(email) && user.getPassword().equals(password)) {
-                if (user.getUserType() == 0) {
-                    return new ModelAndView("redirect:/admin");
-                } else if (user.getUserType() == 1) {
+    public ModelAndView login(@RequestParam String email, @RequestParam String password) throws SQLException {
+                DatabaseConnection db = new DatabaseConnection();
+                Connection connection = db.getConnection();
+                if(db.checkUser(email, password)) {
                     return new ModelAndView("redirect:/student");
-                }
-            }
-        }
+                }return new ModelAndView("login");
         return new ModelAndView("login");
     }
 
