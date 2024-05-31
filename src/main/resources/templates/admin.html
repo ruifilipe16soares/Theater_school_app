@@ -1,22 +1,158 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Admin Page</title>
-    <link rel="stylesheet" type="text/css" href="/style.css">
+    <title>Página Admin</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        header {
+            background-color: #333;
+            color: #ccc;
+            padding: 20px 0;
+            text-align: center;
+            position: relative;
+        }
+        .container {
+            width: 80%;
+            margin: 30px auto;
+            overflow: hidden;
+        }
+        h1 {
+            text-align: center;
+            color: #ccc;
+            margin-bottom: 40px;
+        }
+        h3 {
+            color: #666;
+            border-bottom: 2px solid #ccc;
+            padding-bottom: 10px;
+            cursor: pointer;
+        }
+        .register-button {
+            color: #666;
+            font-size: 12px;
+            float: right;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        ul li {
+            background: #fff;
+            margin: 10px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .button-group {
+            display: flex;
+            gap: 10px; /* space between buttons */
+            margin-left: auto; /* align buttons to the right */
+        }
+        .remove-button, .edit-button {
+            background-color: #ccc;
+            color: #333;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .remove-button:hover, .edit-button:hover {
+            background-color: #999;
+        }
+
+    </style>
+    <script>
+        function toggleUserList() {
+            var userList = document.getElementById("userList");
+            if (userList.style.display === "none") {
+                userList.style.display = "block";
+            } else {
+                userList.style.display = "none";
+            }
+        }
+        
+        function editUser(form, userId) {
+            var idField = document.createElement("input");
+            idField.type = "hidden";
+            idField.name = "id";
+            idField.value = userId;
+            form.appendChild(idField);
+
+            var name = prompt("Enter name:") || "";
+            var age = prompt("Enter age:");
+            age = (age && !isNaN(age)) ? age : 0;
+            var userType = prompt("Enter user type:") || "";
+            var email = prompt("Enter email:") || "";
+            var password = prompt("Enter password:") || "";
+
+            var nameField = document.createElement("input");
+            nameField.type = "hidden";
+            nameField.name = "name";
+            nameField.value = name;
+            form.appendChild(nameField);
+
+            var ageField = document.createElement("input");
+            ageField.type = "hidden";
+            ageField.name = "age";
+            ageField.value = age;
+            form.appendChild(ageField);
+
+            var userTypeField = document.createElement("input");
+            userTypeField.type = "hidden";
+            userTypeField.name = "userType";
+            userTypeField.value = userType;
+            form.appendChild(userTypeField);
+
+            var emailField = document.createElement("input");
+            emailField.type = "hidden";
+            emailField.name = "email";
+            emailField.value = email;
+            form.appendChild(emailField);
+
+            var passwordField = document.createElement("input");
+            passwordField.type = "hidden";
+            passwordField.name = "password";
+            passwordField.value = password;
+            form.appendChild(passwordField);
+
+            form.submit();
+        }
+
+    </script>
 </head>
 <body>
-    <div id="content">
+    <header>
         <h1>Página Admin</h1>
-        <h3>Users ----------------------------------- </h3>
-        <ul>
-            <li th:each="user : ${users}">
-                <span th:text="${user}"></span>
-                <form th:action="@{/deleteUser}" method="post">
-                    <input type="hidden" th:value="${user.id}" name="id"/>
-                    <button class="remove-button" type="submit">Remover</button>
-                </form>
-            </li>
-        </ul>
+    </header>
+    <div class="container" id="content">
+        <h3 onclick="toggleUserList()">Utilizadores <a href="/register" class="register-button">Adicionar Utilizador</a></h3>
+        <div id="userList">
+            <ul>
+                <li th:each="user : ${users}">
+                    <span th:text="${user}"></span>
+                    <div class="button-group">
+                        <form th:action="@{/editUser}" method="post" id="editForm">
+                            <input type="hidden" th:value="${user.id}" name="id"/>
+                            <button class="edit-button" type="submit" onclick="editUser(this.parentElement, this.getAttribute('data-id'))" data-id="${user.id}">Editar</button>   
+                        </form>
+                        <form th:action="@{/deleteUser}" method="post">
+                            <input type="hidden" th:value="${user.id}" name="id"/>
+                            <button class="remove-button" type="submit">Remover</button>
+                        </form>
+                    </div>
+                </li>
+            </ul>
+        </div>
     </div>
 </body>
 </html>

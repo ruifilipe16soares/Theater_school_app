@@ -1,13 +1,106 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Home</title>
-    <link rel="stylesheet" type="text/css" href="/style.css">
+    <title>Escola de Teatro</title>
+<!--     <link rel="stylesheet" type="text/css" href="style.css"> -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        header {
+            background-color: #333333;
+            color: #fff;
+            padding: 10px 0;
+            text-align: center;
+            position: relative;
+        }
+        header a {
+            color: #fff;
+            text-decoration: none;
+            position: absolute;
+            top: 10px;
+            right: 20px;
+        }
+        .container {
+            width: 60%;
+            margin: 20px auto;
+            overflow: hidden;
+        }
+        h1 {
+            text-align: center;
+            color: #fff;
+        }
+        .courses {
+            margin: 20px 0;
+        }
+        .courses ul {
+            list-style: none;
+            padding: 0;
+        }
+        .courses ul li {
+            background: #fff;
+            margin: 10px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .about {
+            background: #fff;
+            padding: 20px;
+            margin: 20px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        footer {
+            background: #333;
+            color: #fff;
+            text-align: center;
+            padding: 10px 0;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+        footer .social {
+            margin: 10px 0;
+        }
+        footer .social a {
+            color: #fff;
+            margin: 0 10px;
+            text-decoration: none;
+        }
+    </style>
 </head>
 <body>
-    <div id="content">
-    <a href="/login">Login</a>
-    <a href="/register">Register</a>
+    <header>
+        <h1>Escola de Teatro</h1>
+        <a href="/login">Login</a>
+    </header>
+    <div class="container">
+        <section class="courses">
+            <h2>Nossos Cursos</h2>
+            <ul>
+                <li>Curso de Interpretação</li>
+                <li>Curso de Expressão Corporal</li>
+                <li>Curso de Voz e Dicção</li>
+                <li>Curso de Teatro Musical</li>
+                <li>Curso de Dramaturgia</li>
+            </ul>
+        </section>
+        <section class="about">
+            <h2>Sobre Nós</h2>
+            <p>Bem-vindo à nossa Escola de Teatro, onde oferecemos uma variedade de cursos para todos os níveis, desde iniciantes até profissionais. Nosso objetivo é desenvolver o talento e a paixão pelo teatro, oferecendo um ambiente criativo e inspirador. Junte-se a nós e descubra o mundo do teatro!</p>
+        </section>
     </div>
+    <footer>
+        <div class="social">
+            <a href="#">Facebook</a>
+            <a href="#">Twitter</a>
+            <a href="#">Instagram</a>
+        </div>
+        <p>&copy; 2024 Escola de Teatro. Todos os direitos reservados.</p>
+    </footer>
 </body>
 </html>

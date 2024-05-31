@@ -14,6 +14,7 @@ import myspringtest.demo.School;
 import myspringtest.demo.User;
 import myspringtest.demo.model.DatabaseConnection;
 
+
 @Controller
 public class WebController {
 
@@ -58,7 +59,9 @@ public class WebController {
         if(userType != null) {
             if(userType.equals("admin")) {
                 return new ModelAndView("redirect:/admin");
-            } else if(userType.equals("user")) {
+            } else if(userType.equals("professor")) {
+                return new ModelAndView("redirect:/student");
+            } else if(userType.equals("student")) {
                 return new ModelAndView("redirect:/student");
             }
             // Adicione mais condições aqui para outros tipos de usuário
@@ -90,5 +93,18 @@ public class WebController {
         return "redirect:/admin";
     }
     
-
+    //String name, int age, String usertype, String email, String password
+    @PostMapping("/editUser")
+    public String postMethodName(@RequestParam int id, @RequestParam String name, @RequestParam int age, @RequestParam String userType, @RequestParam String email, @RequestParam String password) {
+        System.out.println("Received ID: " + id + " Name: " + name + " Age: " + age + " UserType: " + userType + " Email: " + email + " Password: " + password); // Log do ID recebido
+        DatabaseConnection db = new DatabaseConnection();
+        db.getConnection();
+        try {
+            db.updateUser(id, name, age, userType, email, password);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return "redirect:/admin";
+    }
+    
 }

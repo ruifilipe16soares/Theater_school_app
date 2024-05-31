@@ -152,13 +152,26 @@ public class DatabaseConnection {
             return users;
         }
         
-        public void addUser(int id, String name, int age, String usertype, String email, String password)
-                throws SQLException {
-            statement = connection.createStatement();
-            String query = String.format(
-                    "INSERT INTO dbo.Users (id, name, age, usertype, email, password) VALUES (%d, '%s', %d, '%s', '%s', '%s')",
-                    id, name, age, usertype, email, password);
-            statement.executeUpdate(query);
+        public void addUser(int id, String name, int age, String usertype, String email, String password) throws SQLException {
+            boolean userAdded = false;
+    
+            while (!userAdded) {
+                try {
+                    Statement statement = connection.createStatement();
+                    String query = String.format(
+                            "INSERT INTO dbo.Users (id, name, age, usertype, email, password) VALUES (%d, '%s', %d, '%s', '%s', '%s')",
+                            id, name, age, usertype, email, password);
+                    statement.executeUpdate(query);
+                    userAdded = true; // If insertion is successful, exit the loop
+                } catch (SQLException e) {
+                    // Check if the error is due to a duplicate key
+                    if (e.getMessage().contains("Violation of PRIMARY KEY constraint")) {
+                        id++; // Increment the ID and try again
+                    } else {
+                        throw e; // If it's a different error, rethrow it
+                    }
+                }
+            }
         }
 
         public void deleteUser(int id) {
@@ -178,14 +191,49 @@ public class DatabaseConnection {
         }
 
 
-        public void updateUser(int id, String name, int age, String usertype, String email, String password)
+/*         public void updateUser(int id, String name, int age, String usertype, String email, String password)
                 throws SQLException {
             statement = connection.createStatement();
             String query = String.format(
                     "UPDATE dbo.Users SET name = '%s', age = %d, usertype = '%s', email = '%s', password = '%s' WHERE id = %d",
                     name, age, usertype, email, password, id);
             statement.executeUpdate(query);
+        } */
+
+        public void updateUser(int id, String name, int age, String userType, String email, String password) throws SQLException {
+            StringBuilder query = new StringBuilder("UPDATE dbo.Users SET ");
+            boolean first = true;
+        
+            if (name != null && !name.isEmpty()) {
+                query.append("name = '").append(name).append("'");
+                first = false;
+            }
+            if (age > 0) {
+                if (!first) query.append(", ");
+                query.append("age = ").append(age);
+                first = false;
+            }
+            if (userType != null && !userType.isEmpty()) {
+                if (!first) query.append(", ");
+                query.append("usertype = '").append(userType).append("'");
+                first = false;
+            }
+            if (email != null && !email.isEmpty()) {
+                if (!first) query.append(", ");
+                query.append("email = '").append(email).append("'");
+                first = false;
+            }
+            if (password != null && !password.isEmpty()) {
+                if (!first) query.append(", ");
+                query.append("password = '").append(password).append("'");
+            }
+            query.append(" WHERE id = ").append(id);
+        
+            statement = connection.createStatement();
+            statement.executeUpdate(query.toString());
         }
+        
+        
     
     public boolean checkUser(String email, String password) throws SQLException {
         statement = connection.createStatement();
@@ -236,6 +284,7 @@ public class DatabaseConnection {
         //boolean c = db.checkUser("bob@example.com", "bobpasswor");
         //System.out.println("o bolean c " + c);
         db.getUsers();
+        db.updateUser(5, "bbb", 0, "", "", "");
         //db.deleteUser(2);
         //print ao getusers
         System.out.println(db.usersToString());
