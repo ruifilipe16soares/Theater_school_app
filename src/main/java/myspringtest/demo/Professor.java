@@ -58,4 +58,10 @@ public class Professor {
     public void setEducation(String education) {
         this.education = education;
     }
+
+    @Override
+    public String toString() {
+        return "Professor [id=" + id + ", id_user=" + id_user + ", salary=" + salary + ", entryYear=" + entryYear
+                + ", education=" + education + "]";
+    }
 }

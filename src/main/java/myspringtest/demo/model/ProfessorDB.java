@@ -86,6 +86,29 @@ public class ProfessorDB {
         }
     }
 
+        public synchronized List<Professor> getProfessorsByDiscipline(int disciplineId) throws SQLException {
+        List<Professor> professors = new ArrayList<>();
+        String query = "SELECT p.* FROM dbo.Professor p " +
+                       "JOIN dbo.Professor_Discipline pd ON p.id = pd.professor_id " +
+                       "WHERE pd.discipline_id = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setInt(1, disciplineId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                int id_user = resultSet.getInt("id_user");
+                float salary = resultSet.getFloat("salary");
+                int date = resultSet.getInt("entry_date");
+                String education = resultSet.getString("education");
+                Professor professor = new Professor(id, id_user, salary, date, education);
+                professors.add(professor);
+            }
+        }
+
+        return professors;
+    }
+
     public static void main(String[] args) throws SQLException {
         DatabaseConnection db = new DatabaseConnection();
         Connection connection = db.getConnection();

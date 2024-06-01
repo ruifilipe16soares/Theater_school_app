@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import myspringtest.demo.Course;
+import myspringtest.demo.Discipline;
 
 public class CourseDB {
 
@@ -20,7 +21,7 @@ public class CourseDB {
         this.statement = connection.createStatement();
     }
 
-    public List<Course> getCourses() throws SQLException {
+    public synchronized List<Course> getCourses() throws SQLException {
         List<Course> courses = new ArrayList<>();
         String query = "SELECT * FROM dbo.Courses";
         ResultSet resultSet = statement.executeQuery(query);
@@ -39,7 +40,7 @@ public class CourseDB {
         return courses;
     }
 
-    public void addCourse(String name, String description, float price, int duration, int normalTime) throws SQLException {
+    public synchronized void addCourse(String name, String description, float price, int duration, int normalTime) throws SQLException {
         String query = "INSERT INTO dbo.Courses (name, description, price, duration, normal_time) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, name);
@@ -51,7 +52,7 @@ public class CourseDB {
         }
     }
 
-    public void updateCourse(int id, String name, String description, float price, int duration, int normalTime) throws SQLException {
+    public synchronized void updateCourse(int id, String name, String description, float price, int duration, int normalTime) throws SQLException {
         String query = "UPDATE dbo.Courses SET name = ?, description = ?, price = ?, duration = ?, normal_time = ? WHERE id = ?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, name);
@@ -64,7 +65,7 @@ public class CourseDB {
         }
     }
 
-    public void deleteCourse(int id) throws SQLException {
+    public synchronized void deleteCourse(int id) throws SQLException {
 
         String deleteStudentCourseQuery = "DELETE FROM dbo.Student_Course WHERE course_id = ?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(deleteStudentCourseQuery)) {
@@ -85,10 +86,9 @@ public class CourseDB {
             preparedStatement.setInt(1, id);
             preparedStatement.executeUpdate();
         }
-
     }
-    
-        public void addStudentCourse(int studentId, int courseId) throws SQLException {
+
+    public synchronized void addStudentCourse(int studentId, int courseId) throws SQLException {
         String query = "INSERT INTO dbo.Student_Course (student_id, course_id) VALUES (?, ?)";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setInt(1, studentId);
@@ -97,26 +97,55 @@ public class CourseDB {
         }
     }
 
+    public synchronized List<Discipline> getDisciplinesByCourse(int courseId) throws SQLException {
+        List<Discipline> disciplines = new ArrayList<>();
+        String query = "SELECT d.* FROM dbo.Discipline d " +
+                       "JOIN dbo.Course_Discipline cd ON d.id = cd.discipline_id " +
+                       "WHERE cd.course_id = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setInt(1, courseId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                String name = resultSet.getString("name");
+                String description = resultSet.getString("description");
+                String schedule = resultSet.getString("schedule");
+                Discipline discipline = new Discipline(id, name, description, schedule);
+                disciplines.add(discipline);
+            }
+        }
+
+        return disciplines;
+    }
+
     public static void main(String[] args) throws SQLException {
         DatabaseConnection db = new DatabaseConnection();
         Connection connection = db.getConnection();
         CourseDB courseDB = new CourseDB(connection);
 
-        // Adicionar um curso
-        //courseDB.addCourse("Jazz Dance", "Learn the fundamentals of Jazz dance", 120.00f, 30, 60);
+        // Add a course
+        // courseDB.addCourse("Jazz Dance", "Learn the fundamentals of Jazz dance", 120.00f, 30, 60);
 
-        // Atualizar um curso
+        // Update a course
         courseDB.updateCourse(5, "Ballet", "Ballet", 180.00f, 45, 90);
 
-        // Remover um curso
+        // Remove a course
         courseDB.deleteCourse(2);
 
-        // Listar todos os cursos
+        // List all courses
         List<Course> courses = courseDB.getCourses();
         for (Course course : courses) {
             System.out.println(course.toString());
         }
 
-        db.closeConnection(connection); // Certifique-se de fechar a conexão após o uso
+        // List disciplines by course
+        int courseId = 1; // Example course ID
+        List<Discipline> disciplines = courseDB.getDisciplinesByCourse(courseId);
+        for (Discipline discipline : disciplines) {
+            System.out.println(discipline.toString());
+        }
+
+        db.closeConnection(connection); // Ensure to close the connection after use
     }
 }

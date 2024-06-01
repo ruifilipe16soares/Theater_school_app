@@ -80,6 +80,27 @@ public class StudentDB {
         }
     }
 
+    public synchronized List<Student> getStudentsByCourse(int courseId) throws SQLException {
+        List<Student> students = new ArrayList<>();
+        String query = "SELECT s.* FROM dbo.Student s " +
+                       "JOIN dbo.Student_Course sc ON s.id = sc.student_id " +
+                       "WHERE sc.course_id = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setInt(1, courseId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                int id_user = resultSet.getInt("id_user");
+                int entryYear = resultSet.getInt("entry_date");
+                Student student = new Student(id, id_user, entryYear);
+                students.add(student);
+            }
+        }
+
+        return students;
+    }
+
     public static void main(String[] args) throws SQLException {
         DatabaseConnection db = new DatabaseConnection();
         Connection connection = db.getConnection();
@@ -100,6 +121,15 @@ public class StudentDB {
         // List all students
         List<Student> students = studentDB.getStudents();
         for (Student student : students) {
+            System.out.println(student.toString());
+        }
+
+
+System.out.println("studentsByCourse id 1");
+        // List students by course
+        int courseId = 1; // Example course ID
+        List<Student> studentsByCourse = studentDB.getStudentsByCourse(courseId);
+        for (Student student : studentsByCourse) {
             System.out.println(student.toString());
         }
 
