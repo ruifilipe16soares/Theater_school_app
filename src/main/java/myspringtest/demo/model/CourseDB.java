@@ -66,26 +66,35 @@ public class CourseDB {
 
     public void deleteCourse(int id) throws SQLException {
 
-    String deleteStudentCourseQuery = "DELETE FROM dbo.Student_Course WHERE course_id = ?";
-    try (PreparedStatement preparedStatement = connection.prepareStatement(deleteStudentCourseQuery)) {
-        preparedStatement.setInt(1, id);
-        preparedStatement.executeUpdate();
-    }
+        String deleteStudentCourseQuery = "DELETE FROM dbo.Student_Course WHERE course_id = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(deleteStudentCourseQuery)) {
+            preparedStatement.setInt(1, id);
+            preparedStatement.executeUpdate();
+        }
 
-    // Delete from Course_Discipline table
-    String deleteCourseDisciplineQuery = "DELETE FROM dbo.Course_Discipline WHERE course_id = ?";
-    try (PreparedStatement preparedStatement = connection.prepareStatement(deleteCourseDisciplineQuery)) {
-        preparedStatement.setInt(1, id);
-        preparedStatement.executeUpdate();
-    }
+        // Delete from Course_Discipline table
+        String deleteCourseDisciplineQuery = "DELETE FROM dbo.Course_Discipline WHERE course_id = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(deleteCourseDisciplineQuery)) {
+            preparedStatement.setInt(1, id);
+            preparedStatement.executeUpdate();
+        }
 
-    // Delete from Courses table
-    String deleteCourseQuery = "DELETE FROM dbo.Courses WHERE id = ?";
-    try (PreparedStatement preparedStatement = connection.prepareStatement(deleteCourseQuery)) {
-        preparedStatement.setInt(1, id);
-        preparedStatement.executeUpdate();
+        // Delete from Courses table
+        String deleteCourseQuery = "DELETE FROM dbo.Courses WHERE id = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(deleteCourseQuery)) {
+            preparedStatement.setInt(1, id);
+            preparedStatement.executeUpdate();
+        }
+
     }
-        
+    
+        public void addStudentCourse(int studentId, int courseId) throws SQLException {
+        String query = "INSERT INTO dbo.Student_Course (student_id, course_id) VALUES (?, ?)";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setInt(1, studentId);
+            preparedStatement.setInt(2, courseId);
+            preparedStatement.executeUpdate();
+        }
     }
 
     public static void main(String[] args) throws SQLException {

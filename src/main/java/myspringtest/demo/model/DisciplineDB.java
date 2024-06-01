@@ -81,6 +81,17 @@ public class DisciplineDB {
         }
     }
 
+        // New method to add a course-discipline association
+    public void addCourseDiscipline(int courseId, int disciplineId) throws SQLException {
+        String query = "INSERT INTO dbo.Course_Discipline (course_id, discipline_id) VALUES (?, ?)";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setInt(1, courseId);
+            preparedStatement.setInt(2, disciplineId);
+            preparedStatement.executeUpdate();
+        }
+    }
+
+
     public static void main(String[] args) throws SQLException {
         DatabaseConnection db = new DatabaseConnection();
         Connection connection = db.getConnection();

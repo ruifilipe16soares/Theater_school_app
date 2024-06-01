@@ -1,11 +1,11 @@
 package myspringtest.demo.model;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import myspringtest.demo.Professor;
@@ -38,6 +38,15 @@ public class ProfessorDB {
         return professors;
     }
 
+    // New method to add a professor-discipline association
+    public void addProfessorDiscipline(int professorId, int disciplineId) throws SQLException {
+        String query = "INSERT INTO dbo.Professor_Discipline (professor_id, discipline_id) VALUES (?, ?)";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setInt(1, professorId);
+            preparedStatement.setInt(2, disciplineId);
+            preparedStatement.executeUpdate();
+        }
+    }
     public static void main(String[] args) throws SQLException {
         DatabaseConnection db = new DatabaseConnection();
         Connection connection = db.getConnection();
