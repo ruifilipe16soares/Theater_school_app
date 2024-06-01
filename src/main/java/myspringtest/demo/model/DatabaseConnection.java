@@ -87,7 +87,6 @@ public class DatabaseConnection {
             }
             return count;
         } 
-
 /*         public int getTotalUsers() throws SQLException {
             // Create a statement to execute SQL query
             statement = connection.createStatement();

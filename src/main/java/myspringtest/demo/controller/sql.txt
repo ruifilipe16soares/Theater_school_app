@@ -1,0 +1,78 @@
+CREATE TABLE User (
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    age INT NOT NULL,
+    usertype VARCHAR(50) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE Professor (
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    id_user INT NOT NULL,
+    salary FLOAT NOT NULL,
+    entry_date INT NOT NULL,
+    education VARCHAR(255) NOT NULL,
+    FOREIGN KEY (id_user) REFERENCES User(id)
+);
+
+CREATE TABLE Student (
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    id_user INT NOT NULL,
+    entry_date INT NOT NULL,
+    FOREIGN KEY (id_user) REFERENCES Users(id)
+);
+
+CREATE TABLE Courses (
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    description TEXT NOT NULL,
+    price FLOAT NOT NULL,
+    duration INT NOT NULL,
+    normal_time INT NOT NULL
+);
+
+CREATE TABLE Student_Course (
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    student_id INT NOT NULL,
+    course_id INT NOT NULL,
+    FOREIGN KEY (student_id) REFERENCES Student(id),
+    FOREIGN KEY (course_id) REFERENCES Courses(id)
+);
+
+
+
+CREATE TABLE Discipline (
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    description TEXT NOT NULL,
+    schedule VARCHAR(255) NOT NULL,
+);
+
+Create Table Course_Discipline(
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    course_id INT NOT NULL,
+    discipline_id INT NOT NULL,
+    FOREIGN KEY (course_id) REFERENCES Courses(id),
+    FOREIGN KEY (discipline_id) REFERENCES Discipline(id),
+);
+
+Create Table Professor_Discipline(
+id INT IDENTITY(1,1) PRIMARY KEY,
+professor_id INT NOT NULL,
+discipline_id INT NOT NULL,
+FOREIGN KEY (professor_id) REFERENCES Professor(id),
+FOREIGN KEY (discipline_id) REFERENCES Discipline(id),
+);
+
+CREATE TABLE Grades (
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    student_id INT NOT NULL,
+    discipline_id INT NOT NULL,
+    course_id INT NOT NULL,
+    grade FLOAT NOT NULL,
+    date INT NOT NULL,
+    FOREIGN KEY (student_id) REFERENCES Student(id),
+    FOREIGN KEY (discipline_id) REFERENCES Discipline(id),
+    FOREIGN KEY (course_id) REFERENCES Course(id)
+);
