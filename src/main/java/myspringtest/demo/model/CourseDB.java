@@ -52,7 +52,7 @@ public class CourseDB {
         }
     }
 
-    public synchronized void updateCourse(int id, String name, String description, float price, int duration, int normalTime) throws SQLException {
+/*     public synchronized void updateCourse(int id, String name, String description, float price, int duration, int normalTime) throws SQLException {
         String query = "UPDATE dbo.Courses SET name = ?, description = ?, price = ?, duration = ?, normal_time = ? WHERE id = ?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, name);
@@ -63,7 +63,42 @@ public class CourseDB {
             preparedStatement.setInt(6, id);
             preparedStatement.executeUpdate();
         }
+    } */
+
+    public synchronized void updateCourse(int id, String name, String description, float price, int duration, int normalTime) throws SQLException {
+        StringBuilder query = new StringBuilder("UPDATE dbo.Courses SET ");
+        boolean first = true;
+    
+        if (name != null && !name.isEmpty()) {
+            query.append("name = '").append(name).append("'");
+            first = false;
+        }
+        if (description != null && !description.isEmpty()) {
+            if (!first) query.append(", ");
+            query.append("description = '").append(description).append("'");
+            first = false;
+        }
+        if (price > 0.0) {
+            if (!first) query.append(", ");
+            query.append("price = ").append(price);
+            first = false;
+        }
+        if (duration > 0) {
+            if (!first) query.append(", ");
+            query.append("duration = ").append(duration);
+            first = false;
+        }
+        if (normalTime > 0) {
+            if (!first) query.append(", ");
+            query.append("normal_time = ").append(normalTime);
+        }
+        query.append(" WHERE id = ").append(id);
+    
+        try (Statement statement = connection.createStatement()) {
+            statement.executeUpdate(query.toString());
+        }
     }
+    
 
     public synchronized void deleteCourse(int id) throws SQLException {
 

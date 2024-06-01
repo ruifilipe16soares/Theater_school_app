@@ -47,7 +47,7 @@ public class DisciplineDB {
         }
     }
 
-    public synchronized void updateDiscipline(int id, String name, String description, String schedule) throws SQLException {
+/*     public synchronized void updateDiscipline(int id, String name, String description, String schedule) throws SQLException {
         String query = "UPDATE dbo.Discipline SET name = ?, description = ?, schedule = ? WHERE id = ?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, name);
@@ -56,7 +56,32 @@ public class DisciplineDB {
             preparedStatement.setInt(4, id);
             preparedStatement.executeUpdate();
         }
+    } */
+
+    public synchronized void updateDiscipline(int id, String name, String description, String schedule) throws SQLException {
+        StringBuilder query = new StringBuilder("UPDATE dbo.Discipline SET ");
+        boolean first = true;
+    
+        if (name != null && !name.isEmpty()) {
+            query.append("name = '").append(name).append("'");
+            first = false;
+        }
+        if (description != null && !description.isEmpty()) {
+            if (!first) query.append(", ");
+            query.append("description = '").append(description).append("'");
+            first = false;
+        }
+        if (schedule != null && !schedule.isEmpty()) {
+            if (!first) query.append(", ");
+            query.append("schedule = '").append(schedule).append("'");
+        }
+        query.append(" WHERE id = ").append(id);
+    
+        try (Statement statement = connection.createStatement()) {
+            statement.executeUpdate(query.toString());
+        }
     }
+    
 
     public synchronized void deleteDiscipline(int id) throws SQLException {
         // Delete from Course_Discipline table

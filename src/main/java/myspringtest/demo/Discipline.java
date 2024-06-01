@@ -51,6 +51,6 @@ public class Discipline {
 
     @Override
     public String toString() {
-        return "[" + name + "] Descrição: " + description + " | Horário: " + schedule + "| ID: " + id + "\n";
+        return "[" + name + "] Descrição: " + description + " | Horário: " + schedule + " | ID: " + id + "\n";
     }
 }

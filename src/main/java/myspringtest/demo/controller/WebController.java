@@ -17,7 +17,8 @@ import myspringtest.demo.User;
 import myspringtest.demo.model.CourseDB;
 import myspringtest.demo.model.DatabaseConnection;
 import myspringtest.demo.model.DisciplineDB;
-
+import myspringtest.demo.model.ProfessorDB;
+import myspringtest.demo.model.StudentDB;
 
 @Controller
 public class WebController {
@@ -39,15 +40,69 @@ public class WebController {
         return "register";
     }
 
+    @GetMapping("/registerDiscipline")
+    public String registerDiscipline() {
+        return "registerDiscipline";
+    }
 
-    @PostMapping("/register")
-    public ModelAndView register(@RequestParam String name, @RequestParam int age, String userType, @RequestParam String email, @RequestParam String password) throws SQLException {
+    @GetMapping("/registerCourse")
+    public String registerCourse() {
+        return "registerCourse";
+    }
+
+    @PostMapping("/registerCourse")
+    public ModelAndView registerCourse(@RequestParam String name, @RequestParam String description, @RequestParam float price, @RequestParam int duration, @RequestParam int normalTime) throws SQLException {
+        DatabaseConnection db = new DatabaseConnection();
+        CourseDB courseDB = new CourseDB(db.getConnection());
+        courseDB.addCourse(name, description, price, duration, normalTime);
+        return new ModelAndView("redirect:/admin");
+    }
+
+    //postmapping discipline
+    @PostMapping("/registerDiscipline")
+    public ModelAndView registerDiscipline(@RequestParam String name, @RequestParam String description, @RequestParam String schedule) throws SQLException {
+        DatabaseConnection db = new DatabaseConnection();
+        DisciplineDB disciplineDB = new DisciplineDB(db.getConnection());
+        disciplineDB.addDiscipline(name, description, schedule);
+        return new ModelAndView("redirect:/admin");
+    }
+
+    @PostMapping("/registerAdmin")
+    public ModelAndView register(@RequestParam String name, @RequestParam int age,
+            @RequestParam String email, @RequestParam String password) throws SQLException {
         DatabaseConnection db = new DatabaseConnection();
         Connection connection = db.getConnection();
         int total = db.getCountUsers();
         total++;
-        db.addUser(total, name, age, userType, email, password);
-        return new ModelAndView("redirect:/");
+        db.addUser(total, name, age, "Admin", email, password);
+
+        return new ModelAndView("redirect:/admin");
+    }
+
+    @PostMapping("/registerStudent")
+    public ModelAndView registerUser(@RequestParam String name, @RequestParam int age,
+            @RequestParam String email, @RequestParam String password, @RequestParam int entryYear) throws SQLException {
+        DatabaseConnection db = new DatabaseConnection();
+        StudentDB studentDB = new StudentDB(db.getConnection());
+        Connection connection = db.getConnection();
+        int total = db.getCountUsers();
+        total++;
+        db.addUser(total, name, age, "Aluno", email, password);
+        studentDB.addStudent(total, entryYear);
+
+        return new ModelAndView("redirect:/admin");
+    }
+
+    @PostMapping("/registerProfessor")
+    public ModelAndView register3(@RequestParam String name, @RequestParam int age, @RequestParam String email, @RequestParam String password, @RequestParam float salary, @RequestParam int entry_date, @RequestParam String education) throws SQLException {
+        DatabaseConnection db = new DatabaseConnection();
+        Connection connection = db.getConnection();
+        ProfessorDB professorDB = new ProfessorDB(db.getConnection());
+        int total = db.getCountUsers();
+        total++;
+        db.addUser(total, name, age, "Professor", email, password);
+        professorDB.addProfessor(total, salary, entry_date, education);
+        return new ModelAndView("redirect:/admin");
     }
 
     @GetMapping("/login")
@@ -60,12 +115,12 @@ public class WebController {
         DatabaseConnection db = new DatabaseConnection();
         Connection connection = db.getConnection();
         String userType = db.checkType(email, password);
-        if(userType != null) {
-            if(userType.equals("admin")) {
+        if (userType != null) {
+            if (userType.equals("admin")) {
                 return new ModelAndView("redirect:/admin");
-            } else if(userType.equals("professor")) {
+            } else if (userType.equals("professor")) {
                 return new ModelAndView("redirect:/student");
-            } else if(userType.equals("student")) {
+            } else if (userType.equals("student")) {
                 return new ModelAndView("redirect:/student");
             }
             // Adicione mais condições aqui para outros tipos de usuário
@@ -86,7 +141,7 @@ public class WebController {
         List<Course> courses = courseDB.getCourses();
         DisciplineDB disciplineDB = new DisciplineDB(db.getConnection());
         List<Discipline> disciplines = disciplineDB.getDisciplines();
-        
+
         List<User> users = db.getUsers();
         ModelAndView modelAndView = new ModelAndView("admin");
         modelAndView.addObject("courses", courses);
@@ -99,7 +154,7 @@ public class WebController {
     public String deleteUser(@RequestParam int id) throws SQLException {
         System.out.println("Received ID: " + id); // Log do ID recebido
         DatabaseConnection db = new DatabaseConnection();
-        Connection connection = db.getConnection();
+        db.getConnection();
         db.deleteUser(id);
         return "redirect:/admin";
     }
@@ -123,7 +178,7 @@ public class WebController {
         disciplineDB.deleteDiscipline(id);
         return "redirect:/admin";
     }
-    
+
     //String name, int age, String usertype, String email, String password
     @PostMapping("/editUser")
     public String postMethodName(@RequestParam int id, @RequestParam String name, @RequestParam int age, @RequestParam String userType, @RequestParam String email, @RequestParam String password) {
@@ -132,6 +187,49 @@ public class WebController {
         db.getConnection();
         try {
             db.updateUser(id, name, age, userType, email, password);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return "redirect:/admin";
+    }
+
+    @PostMapping("/editDiscipline")
+    public String editDiscipline(@RequestParam int id, @RequestParam String name, @RequestParam String description, @RequestParam String schedule) {
+        System.out.println("Received ID: " + id + " Name: " + name + " Description: " + description + " Schedule: " + schedule); // Log do ID recebido
+        DatabaseConnection db = new DatabaseConnection();
+        db.getConnection();
+        try {
+            DisciplineDB disciplineDB = new DisciplineDB(db.getConnection());
+            disciplineDB.updateDiscipline(id, name, description, schedule);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return "redirect:/admin";
+    }
+
+    @PostMapping("/editCourse")
+    public String editCourse(@RequestParam int id, @RequestParam String name, @RequestParam String description, @RequestParam float price, @RequestParam int duration, @RequestParam int normalTime) {
+        System.out.println("Received ID: " + id + " Name: " + name + " Description: " + description + " Price: " + price + " Duration: " + duration + " NormalTime: " + normalTime); // Log do ID recebido
+        DatabaseConnection db = new DatabaseConnection();
+        db.getConnection();
+        try {
+            CourseDB courseDB = new CourseDB(db.getConnection());
+            courseDB.updateCourse(id, name, description, price, duration, normalTime);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return "redirect:/admin";
+    }
+
+    //add aluno to course
+    @PostMapping("/addAlunoToCourse")
+    public String addAlunoToCourse(@RequestParam int courseId, @RequestParam int studentId) {
+        System.out.println("Received Student ID: " + studentId + " Course ID: " + courseId); // Log do ID recebido
+        DatabaseConnection db = new DatabaseConnection();
+        db.getConnection();
+        try {
+            CourseDB courseDB = new CourseDB(db.getConnection());
+            courseDB.addStudentCourse(studentId, courseId);
         } catch (SQLException e) {
             e.printStackTrace();
         }

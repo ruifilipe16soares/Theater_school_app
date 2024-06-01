@@ -269,6 +269,7 @@ public class DatabaseConnection {
     public static void main(String[] args) throws SQLException {
         DatabaseConnection db = new DatabaseConnection();
         Connection connection = db.getConnection();
+        StudentDB sdb = new StudentDB(db.getConnection());
         //int contador = db.getUsers();
         //db.addUser(5, "Teste", 20, "admin11", "teste5@teste", "teste22");
         //System.out.println(db.checkType("charlie@example.com", "charliepassword"));
@@ -283,8 +284,9 @@ public class DatabaseConnection {
         //boolean c = db.checkUser("bob@example.com", "bobpasswor");
         //System.out.println("o bolean c " + c);
         db.getUsers();
-        db.updateUser(5, "bbb", 0, "", "", "");
-        //db.deleteUser(2);
+        //db.updateUser(5, "bbb", 0, "", "", "");
+        //db.deleteUser(1);
+        //sdb.deleteStudent(8);
         //print ao getusers
         System.out.println(db.usersToString());
         System.out.println("\n");

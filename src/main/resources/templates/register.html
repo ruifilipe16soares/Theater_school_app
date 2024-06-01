@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,61 +15,137 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
+            flex-wrap: wrap;
+            /* Permite que os itens se movam para a próxima linha em telas menores */
         }
+
+        .wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            /* Permite que os itens se movam para a próxima linha em telas menores */
+            width: 100%;
+            max-width: 1800px;
+        }
+
         .container {
-            width: 80%;
-            max-width: 600px;
+            width: 20%;
+            min-height: fit-content;
+            min-width: 300px;
             background: #fff;
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin: 10px;
+            /* Espaçamento entre os contêineres */
         }
+
         h1 {
             text-align: center;
             color: #333;
         }
+
         form {
             display: flex;
             flex-direction: column;
         }
+
         label {
             margin: 10px 0 5px;
             color: #333;
         }
-        input, select, button {
+
+        input,
+        select,
+        button {
             padding: 10px;
             margin-bottom: 15px;
             border: 1px solid #ddd;
             border-radius: 4px;
             font-size: 16px;
         }
+
         button {
             background-color: #333;
             color: #fff;
             cursor: pointer;
             transition: background-color 0.3s;
         }
+
         button:hover {
             background-color: #999;
         }
+
+        /* Media query para telas menores */
+        @media (max-width: 768px) {
+            .container {
+                width: 100%;
+                /* Cada formulário ocupará 100% da largura da tela menor */
+                margin: 10px 0;
+                /* Margem entre os contêineres na vertical */
+            }
+        }
     </style>
 </head>
+
 <body>
     <div class="container">
-        <h1>Registar</h1>
-        <form action="/register" method="post">
+        <h1>Registar Professor</h1>
+        <form action="/registerProfessor" method="post">
             <label for="name">Nome:</label>
             <input type="text" id="name" name="name" required>
 
             <label for="age">Idade:</label>
             <input type="number" id="age" name="age" required>
-            
-            <label for="usertype">Tipo de Utilizador:</label>
-            <select id="usertype" name="userType" required>
-                <option value="admin">Admin</option>
-                <option value="professor">Professor</option>
-                <option value="aluno">Aluno</option>
-            </select>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+
+            <label for="salary">Salário:</label>
+            <input type="number" step="0.01" id="salary" name="salary" required>
+
+            <label for="entry_date">Data de Entrada:</label>
+            <input type="number" id="entry_date" name="entry_date" required>
+
+            <label for="education">Educação:</label>
+            <input type="text" id="education" name="education" required>
+
+            <button type="submit">Registar</button>
+        </form>
+    </div>
+    <div class="container">
+        <h1>Registar Aluno</h1>
+        <form action="/registerStudent" method="post">
+            <label for="name">Nome:</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="age">Idade:</label>
+            <input type="number" id="age" name="age" required>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+
+            <label for="entryYear">Ano de Entrada:</label>
+            <input type="number" id="entryYear" name="entryYear" required>
+
+            <button type="submit">Registar</button>
+        </form>
+    </div>
+    <div class="container">
+        <h1>Registar Admin</h1>
+        <form action="/registerAdmin" method="post">
+            <label for="name">Nome:</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="age">Idade:</label>
+            <input type="number" id="age" name="age" required>
 
             <label for="email">Email:</label>
             <input type="email" id="email" name="email" required>
@@ -80,4 +157,5 @@
         </form>
     </div>
 </body>
+
 </html>
