@@ -2,11 +2,14 @@ package myspringtest.demo;
 
 import java.util.ArrayList;
 
-public class Student extends User {
-    private ArrayList<Discipline> disciplines;
+public class Student {
+    private int id;
+    private int id_user;
     private int entryYear;
 
-    public Student(String name, int age, String userType, String email, String password, int id) {
-        super(name, age, userType, email, password, id);
+    public Student(int id, int id_user, int entryYear) {
+        this.id = id;
+        this.id_user = id_user;
+        this.entryYear = entryYear;
     }
 }

@@ -20,7 +20,7 @@ public class DisciplineDB {
         this.statement = connection.createStatement();
     }
 
-    public List<Discipline> getDisciplines() throws SQLException {
+    public synchronized List<Discipline> getDisciplines() throws SQLException {
         List<Discipline> disciplines = new ArrayList<>();
         String query = "SELECT * FROM dbo.Discipline";
         ResultSet resultSet = statement.executeQuery(query);
@@ -37,7 +37,7 @@ public class DisciplineDB {
         return disciplines;
     }
 
-    public void addDiscipline(String name, String description, String schedule) throws SQLException {
+    public synchronized void addDiscipline(String name, String description, String schedule) throws SQLException {
         String query = "INSERT INTO dbo.Discipline (name, description, schedule) VALUES (?, ?, ?)";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, name);
@@ -47,7 +47,7 @@ public class DisciplineDB {
         }
     }
 
-    public void updateDiscipline(int id, String name, String description, String schedule) throws SQLException {
+    public synchronized void updateDiscipline(int id, String name, String description, String schedule) throws SQLException {
         String query = "UPDATE dbo.Discipline SET name = ?, description = ?, schedule = ? WHERE id = ?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, name);
@@ -58,7 +58,7 @@ public class DisciplineDB {
         }
     }
 
-    public void deleteDiscipline(int id) throws SQLException {
+    public synchronized void deleteDiscipline(int id) throws SQLException {
         // Delete from Course_Discipline table
         String deleteCourseDisciplineQuery = "DELETE FROM dbo.Course_Discipline WHERE discipline_id = ?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(deleteCourseDisciplineQuery)) {
@@ -81,8 +81,8 @@ public class DisciplineDB {
         }
     }
 
-        // New method to add a course-discipline association
-    public void addCourseDiscipline(int courseId, int disciplineId) throws SQLException {
+    // New method to add a course-discipline association
+    public synchronized void addCourseDiscipline(int courseId, int disciplineId) throws SQLException {
         String query = "INSERT INTO dbo.Course_Discipline (course_id, discipline_id) VALUES (?, ?)";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setInt(1, courseId);
@@ -91,20 +91,22 @@ public class DisciplineDB {
         }
     }
 
-
     public static void main(String[] args) throws SQLException {
         DatabaseConnection db = new DatabaseConnection();
         Connection connection = db.getConnection();
         DisciplineDB disciplineDB = new DisciplineDB(connection);
 
         // Add a discipline
-        //disciplineDB.addDiscipline("Physics", "Introduction to Physics", "MWF 09:00-10:00");
+        // disciplineDB.addDiscipline("Physics", "Introduction to Physics", "MWF 09:00-10:00");
 
         // Update a discipline
-        //disciplineDB.updateDiscipline(1, "Advanced Physics", "Advanced topics in Physics", "MWF 09:00-10:00");
+        // disciplineDB.updateDiscipline(1, "Advanced Physics", "Advanced topics in Physics", "MWF 09:00-10:00");
+
+        // Add a course-discipline association
+        //disciplineDB.addCourseDiscipline(1, 1); // Example course ID and discipline ID
 
         // Delete a discipline
-        //disciplineDB.deleteDiscipline();
+        // disciplineDB.deleteDiscipline(1);
 
         // List all disciplines
         List<Discipline> disciplines = disciplineDB.getDisciplines();
