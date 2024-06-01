@@ -60,8 +60,6 @@
 <!-- Remove the version tag -->
 		</dependency>
 	</dependencies>
-
-
 	<build>
 		<plugins>
 			<plugin>

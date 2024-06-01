@@ -80,6 +80,24 @@
                 userList.style.display = "none";
             }
         }
+
+        function toggleCourseList() {
+            var courseList = document.getElementById("courseList");
+            if (courseList.style.display === "none") {
+                courseList.style.display = "block";
+            } else {
+                courseList.style.display = "none";
+            }
+        }
+
+        function toggleDisciplineList() {
+            var disciplineList = document.getElementById("disciplineList");
+            if (disciplineList.style.display === "none") {
+                disciplineList.style.display = "block";
+            } else {
+                disciplineList.style.display = "none";
+            }
+        }
         
         function editUser(form, userId) {
             var idField = document.createElement("input");
@@ -135,8 +153,10 @@
         <h1>Página Admin</h1>
     </header>
     <div class="container" id="content">
+
+        <!-- LISTAR USERS (ADMINS PROFESSORES E ALUNOS) -->
         <h3 onclick="toggleUserList()">Utilizadores <a href="/register" class="register-button">Adicionar Utilizador</a></h3>
-        <div id="userList">
+        <div id="userList" style="display: none;">
             <ul>
                 <li th:each="user : ${users}">
                     <span th:text="${user}"></span>
@@ -153,6 +173,47 @@
                 </li>
             </ul>
         </div>
+
+        <!-- LISTAR DISCIPLINAS -->
+        <h3 onclick="toggleDisciplineList()">Disciplinas <a href="/registerDiscipline" class="register-button">Adicionar Disciplina</a></h3>
+        <div id="disciplineList" style="display: none;">
+            <ul>
+                <li th:each="discipline : ${disciplines}">
+                    <span th:text="${discipline}"></span>
+                    <div class="button-group">
+                        <form th:action="@{/editDiscipline}" method="post">
+                            <input type="hidden" th:value="${discipline.id}" name="id"/>
+                            <button class="edit-button" type="submit">Editar</button>
+                        </form>
+                        <form th:action="@{/deleteDiscipline}" method="post">
+                            <input type="hidden" th:value="${discipline.id}" name="id"/>
+                            <button class="remove-button" type="submit">Remover</button>
+                        </form>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <!-- LISTAR CURSOS -->
+        <h3 onclick="toggleCourseList()">Cursos <a href="/registerCourse" class="register-button">Adicionar Curso</a></h3>
+        <div id="courseList" style="display: none;">
+            <ul>
+                <li th:each="course : ${courses}">
+                    <span th:text="${course}"></span>
+                    <div class="button-group">
+                        <form th:action="@{/editCourse}" method="post">
+                            <input type="hidden" th:value="${course.id}" name="id"/>
+                            <button class="edit-button" type="submit">Editar</button>
+                        </form>
+                        <form th:action="@{/deleteCourse}" method="post">
+                            <input type="hidden" th:value="${course.id}" name="id"/>
+                            <button class="remove-button" type="submit">Remover</button>
+                        </form>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
     </div>
 </body>
 </html>

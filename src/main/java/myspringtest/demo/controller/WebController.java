@@ -10,9 +10,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import myspringtest.demo.Course;
+import myspringtest.demo.Discipline;
 import myspringtest.demo.School;
 import myspringtest.demo.User;
+import myspringtest.demo.model.CourseDB;
 import myspringtest.demo.model.DatabaseConnection;
+import myspringtest.demo.model.DisciplineDB;
 
 
 @Controller
@@ -75,11 +79,18 @@ public class WebController {
     }
 
     @GetMapping("/admin")
-        public ModelAndView admin() throws SQLException {
+    public ModelAndView admin() throws SQLException {
         DatabaseConnection db = new DatabaseConnection();
         db.getConnection();
+        CourseDB courseDB = new CourseDB(db.getConnection());
+        List<Course> courses = courseDB.getCourses();
+        DisciplineDB disciplineDB = new DisciplineDB(db.getConnection());
+        List<Discipline> disciplines = disciplineDB.getDisciplines();
+        
         List<User> users = db.getUsers();
         ModelAndView modelAndView = new ModelAndView("admin");
+        modelAndView.addObject("courses", courses);
+        modelAndView.addObject("disciplines", disciplines);
         modelAndView.addObject("users", users);
         return modelAndView;
     }
@@ -90,6 +101,26 @@ public class WebController {
         DatabaseConnection db = new DatabaseConnection();
         Connection connection = db.getConnection();
         db.deleteUser(id);
+        return "redirect:/admin";
+    }
+
+    /* delete curso */
+    @PostMapping("/deleteCourse")
+    public String deleteCourse(@RequestParam int id) throws SQLException {
+        System.out.println("Received ID: " + id); // Log do ID recebido
+        DatabaseConnection db = new DatabaseConnection();
+        CourseDB courseDB = new CourseDB(db.getConnection());
+        courseDB.deleteCourse(id);
+        return "redirect:/admin";
+    }
+
+    /* delete disciplina */
+    @PostMapping("/deleteDiscipline")
+    public String deleteDiscipline(@RequestParam int id) throws SQLException {
+        System.out.println("Received ID: " + id); // Log do ID recebido
+        DatabaseConnection db = new DatabaseConnection();
+        DisciplineDB disciplineDB = new DisciplineDB(db.getConnection());
+        disciplineDB.deleteDiscipline(id);
         return "redirect:/admin";
     }
     

@@ -43,7 +43,7 @@ public class Course {
 
     @Override
     public String toString() {
-        return "Course [id=" + id + ", name=" + name + ", description=" + description + ", price=" + price
-                + ", duration=" + duration + ", normalTime=" + normalTime + "]";
+        return "[" + name + "] Descrição: " + description + " | Preço: " + price
+                + " | Duração: " + duration + " | normalTime: " + normalTime + " | ID: " + id;
     }
 }

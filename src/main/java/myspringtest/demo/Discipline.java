@@ -51,7 +51,6 @@ public class Discipline {
 
     @Override
     public String toString() {
-        System.out.println("Discipline [id=" + id + ", name=" + name + ", description=" + description + ", schedule=" + schedule + "]");
-        return description;
+        return "[" + name + "] Descrição: " + description + " | Horário: " + schedule + "| ID: " + id + "\n";
     }
 }
