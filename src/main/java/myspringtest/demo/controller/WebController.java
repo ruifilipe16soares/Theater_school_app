@@ -187,6 +187,53 @@ public class WebController {
         ProfessorDB professorDB = new ProfessorDB(db.getConnection());
         List<Professor> professors = professorDB.getProfessors();
 
+        //FUNCOES DE ESTATISTICA
+        //string com numero total de alunos na escola + numero total de professores
+        int totalAlunos = 0;
+        for (User user : users) {
+            if (user.getUserType().equals("Student")) {
+                totalAlunos++;
+            }
+        }
+        int totalProfessores = 0;
+        for (User user : users) {
+            if (user.getUserType().equals("Professor")) {
+                totalProfessores++;
+            }
+        }
+        String StotalAlunos = "Total de alunos: " + totalAlunos;
+        String StotalProfessores = "Total de professores: " + totalProfessores;
+
+        //curso com mais alunos
+        CourseDB courseDB2 = new CourseDB(db.getConnection());
+        StudentDB studentDB = new StudentDB(db.getConnection());
+        //para cada curso getstudentsbycourse e guardar o id do curso com mais alunos
+        int idCourse = 0;
+        int maxStudents = 0;
+        for (Course course : courses) {
+            int students = studentDB.getStudentsByCourse(course.getId()).size();
+            if (students > maxStudents) {
+                maxStudents = students;
+                idCourse = course.getId();
+            }
+        }
+        Course course = courseDB2.getCourse(idCourse);
+        String nomeCurso = "Curso com mais alunos: " + course.getName() + " com " + maxStudents + " alunos";
+
+        //curso mais caro
+        float maxPrice = 0;
+        int idCourse2 = 0;
+        for (Course course2 : courses) {
+            if (course2.getPrice() > maxPrice) {
+                maxPrice = course2.getPrice();
+                idCourse2 = course2.getId();
+            }
+        }
+        Course course2 = courseDB2.getCourse(idCourse2);
+        String nomeCurso2 = "Curso mais caro: " + course2.getName() + " com preço de " + course2.getPrice() + " euros";
+
+        //--------------------------
+
         ModelAndView modelAndView = new ModelAndView("admin");
         modelAndView.addObject("courses", courses);
         modelAndView.addObject("disciplines", disciplines);
@@ -195,6 +242,13 @@ public class WebController {
         modelAndView.addObject("professors", professors);
         modelAndView.addObject("usersProfessors", usersProfessors);
         modelAndView.addObject("usersAlunos", usersAlunos);
+
+        //enviar estatistica
+        modelAndView.addObject("totalAlunos", StotalAlunos);
+        modelAndView.addObject("totalProfessores", StotalProfessores);
+        modelAndView.addObject("nomeCurso", nomeCurso);
+        modelAndView.addObject("nomeCurso2", nomeCurso2);
+
         return modelAndView;
     }
 

@@ -423,6 +423,14 @@
             }
         }
 
+        function toggleStatsList() {
+            var statsList = document.getElementById("statsList");
+            if (statsList.style.display === "none") {
+                statsList.style.display = "block";
+            } else {
+                statsList.style.display = "none";
+            }
+        }
 
     </script>
 </head>
@@ -571,6 +579,26 @@
                 </li>
             </ul>
         </div>
+
+        <!-- LISTAR ESTATISTICAS -->
+        <h3 onclick="toggleStatsList()">Estatísticas</h3>
+        <div id="statsList">
+            <ul>
+                <li>
+                    <span th:text="${totalAlunos}"></span>
+                </li>
+                <li>
+                    <span th:text="${totalProfessores}"></span>
+                </li>
+                <li>
+                    <span th:text="${nomeCurso}"></span>
+                </li>
+                <li>
+                    <span th:text="${nomeCurso2}"></span>
+                </li>
+            </ul>
+        </div>
+
 
     </div>
 </body>
