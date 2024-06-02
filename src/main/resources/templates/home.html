@@ -78,12 +78,43 @@
             margin: 0 10px;
             text-decoration: none;
         }
+        .remove-button, .edit-button, .ver-curso-button, .addAluno-button, .addProf-button {
+            background-color: #ccc;
+            color: #333;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .remove-button:hover, .edit-button:hover, .ver-curso-button:hover, .addAluno-button:hover, .addProf-button:hover {
+            background-color: #999;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        ul li {
+            background: #fff;
+            margin: 10px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        #loginButton {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
     </style>
 </head>
 <body>
     <header>
         <h1>Escola de Teatro</h1>
-        <a href="/login">Login</a>
+        <a id="loginButton" href="/login">Login</a>
     </header>
     <nav>
         <a href="/">Home</a>
