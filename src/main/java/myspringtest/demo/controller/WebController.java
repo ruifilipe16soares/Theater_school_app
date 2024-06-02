@@ -217,8 +217,14 @@ public class WebController {
                 idCourse = course.getId();
             }
         }
+        String nomeCurso = "";
         Course course = courseDB2.getCourse(idCourse);
-        String nomeCurso = "Curso com mais alunos: " + course.getName() + " com " + maxStudents + " alunos";
+        if (maxStudents == 0) {
+            nomeCurso = "Nenhum aluno inscrito";
+        } else {
+            nomeCurso = "Curso com mais alunos: " + course.getName() + " com " + maxStudents + " alunos";
+        }
+        
 
         //curso mais caro
         float maxPrice = 0;
@@ -330,7 +336,7 @@ public class WebController {
 
     //add aluno to course
     @PostMapping("/addAlunoToCourse")
-    public String addAlunoToCourse(@RequestParam int courseId, @RequestParam int studentId) {
+    public String addAlunoToCourse(@RequestParam int studentId, @RequestParam int courseId) {
         System.out.println("Received Student ID: " + studentId + " Course ID: " + courseId); // Log do ID recebido
         DatabaseConnection db = new DatabaseConnection();
         db.getConnection();
