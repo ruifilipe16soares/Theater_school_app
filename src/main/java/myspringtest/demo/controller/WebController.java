@@ -2,6 +2,7 @@ package myspringtest.demo.controller;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Controller;
@@ -12,6 +13,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import myspringtest.demo.Course;
 import myspringtest.demo.Discipline;
+import myspringtest.demo.Professor;
 import myspringtest.demo.School;
 import myspringtest.demo.User;
 import myspringtest.demo.model.CourseDB;
@@ -74,7 +76,7 @@ public class WebController {
         Connection connection = db.getConnection();
         int total = db.getCountUsers();
         total++;
-        db.addUser(total, name, age, "Admin", email, password);
+        db.addUser(1, name, age, "Admin", email, password);
 
         return new ModelAndView("redirect:/admin");
     }
@@ -87,7 +89,7 @@ public class WebController {
         Connection connection = db.getConnection();
         int total = db.getCountUsers();
         total++;
-        db.addUser(total, name, age, "Aluno", email, password);
+        db.addUser(1, name, age, "Aluno", email, password);
         studentDB.addStudent(total, entryYear);
 
         return new ModelAndView("redirect:/admin");
@@ -100,7 +102,7 @@ public class WebController {
         ProfessorDB professorDB = new ProfessorDB(db.getConnection());
         int total = db.getCountUsers();
         total++;
-        db.addUser(total, name, age, "Professor", email, password);
+        db.addUser(1, name, age, "Professor", email, password);
         professorDB.addProfessor(total, salary, entry_date, education);
         return new ModelAndView("redirect:/admin");
     }
@@ -118,9 +120,9 @@ public class WebController {
         if (userType != null) {
             if (userType.equals("admin")) {
                 return new ModelAndView("redirect:/admin");
-            } else if (userType.equals("professor")) {
+            } else if (userType.equals("Professor")) {
                 return new ModelAndView("redirect:/student");
-            } else if (userType.equals("student")) {
+            } else if (userType.equals("Aluno")) {
                 return new ModelAndView("redirect:/student");
             }
             // Adicione mais condições aqui para outros tipos de usuário
@@ -143,10 +145,40 @@ public class WebController {
         List<Discipline> disciplines = disciplineDB.getDisciplines();
 
         List<User> users = db.getUsers();
+        //if user.userType == "admin" guardar em lista e passar para modelAndView
+        List<User> admins = new ArrayList<>();
+        for (User user : users) {
+            if (user.getUserType().equals("Admin")) {
+                admins.add(user);
+            }
+        }
+
+        //if user.userType == "Professor" guardar em lista e passar para modelAndView
+        List<User> usersProfessors = new ArrayList<>();
+        for (User user : users) {
+            if (user.getUserType().equals("Professor")) {
+                usersProfessors.add(user);
+            }
+        }
+
+        List<User> usersAlunos = new ArrayList<>();
+        for (User user : users) {
+            if (user.getUserType().equals("Aluno")) {
+                usersAlunos.add(user);
+            }
+        }
+
+        ProfessorDB professorDB = new ProfessorDB(db.getConnection());
+        List<Professor> professors = professorDB.getProfessors();
+
         ModelAndView modelAndView = new ModelAndView("admin");
         modelAndView.addObject("courses", courses);
         modelAndView.addObject("disciplines", disciplines);
         modelAndView.addObject("users", users);
+        modelAndView.addObject("admins", admins);
+        modelAndView.addObject("professors", professors);
+        modelAndView.addObject("usersProfessors", usersProfessors);
+        modelAndView.addObject("usersAlunos", usersAlunos);
         return modelAndView;
     }
 
@@ -230,6 +262,21 @@ public class WebController {
         try {
             CourseDB courseDB = new CourseDB(db.getConnection());
             courseDB.addStudentCourse(studentId, courseId);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return "redirect:/admin";
+    }
+
+    //add professor to discipline
+    @PostMapping("/addProfToDiscipline")
+    public String addProfToDiscipline(@RequestParam int disciplineId, @RequestParam int professorId) {
+        System.out.println("Received Professor ID: " + professorId + " Discipline ID: " + disciplineId); // Log do ID recebido
+        DatabaseConnection db = new DatabaseConnection();
+        db.getConnection();
+        try {
+            ProfessorDB professorDB = new ProfessorDB(db.getConnection());
+            professorDB.addProfessorDiscipline(professorId, disciplineId);
         } catch (SQLException e) {
             e.printStackTrace();
         }

@@ -57,7 +57,7 @@
             gap: 10px; /* space between buttons */
             margin-left: auto; /* align buttons to the right */
         }
-        .remove-button, .edit-button, .ver-curso-button, .addAluno-button {
+        .remove-button, .edit-button, .ver-curso-button, .addAluno-button, .addProf-button {
             background-color: #ccc;
             color: #333;
             border: none;
@@ -66,7 +66,7 @@
             cursor: pointer;
             transition: background-color 0.3s;
         }
-        .remove-button:hover, .edit-button:hover, .ver-curso-button:hover, .addAluno-button:hover {
+        .remove-button:hover, .edit-button:hover, .ver-curso-button:hover, .addAluno-button:hover, .addProf-button:hover {
             background-color: #999;
         }
 
@@ -355,6 +355,53 @@
             form.submit();
         }
 
+        //deve pedir através de um prompt o id do professor e adicionar à disciplina
+        //addProfToDiscipline(disciplineID)
+        function addProfToDiscipline(form, disciplineId) {
+            var idField = document.createElement("input");
+            idField.type = "hidden";
+            idField.name = "disciplineId";
+            idField.value = disciplineId;
+            form.appendChild(idField);
+
+            var profId = prompt("Enter professor id:");
+            profId = (profId && !isNaN(profId)) ? parseInt(profId) : 0;
+
+            var profIdField = document.createElement("input");
+            profIdField.type = "hidden";
+            profIdField.name = "professorId";
+            profIdField.value = profId;
+            form.appendChild(profIdField);
+
+            form.submit();
+        }
+
+        function toggleAdminList() {
+            var adminList = document.getElementById("adminList");
+            if (adminList.style.display === "none") {
+                adminList.style.display = "block";
+            } else {
+                adminList.style.display = "none";
+            }
+        }
+
+        function toggleProfessorList() {
+            var professorList = document.getElementById("professorList");
+            if (professorList.style.display === "none") {
+                professorList.style.display = "block";
+            } else {
+                professorList.style.display = "none";
+            }
+        }
+
+        function toggleAlunoList() {
+            var alunoList = document.getElementById("alunoList");
+            if (alunoList.style.display === "none") {
+                alunoList.style.display = "block";
+            } else {
+                alunoList.style.display = "none";
+            }
+        }
 
 
     </script>
@@ -366,7 +413,7 @@
     <div class="container" id="content">
 
         <!-- LISTAR USERS (ADMINS PROFESSORES E ALUNOS) -->
-        <h3 onclick="toggleUserList()">Utilizadores <a href="/register" class="register-button">Adicionar Utilizador</a></h3>
+<!--         <h3 onclick="toggleUserList()">Utilizadores <a href="/register" class="register-button">Adicionar Utilizador</a></h3>
         <div id="userList">
             <ul>
                 <li th:each="user : ${users}">
@@ -383,6 +430,66 @@
                     </div>
                 </li>
             </ul>
+        </div> -->
+
+        <!-- LISTAR USER COM USERTYPE=='ADMIN' -->
+        <h3 onclick="toggleAdminList()">Administradores <a href="/register" class="register-button">Adicionar Administrador</a></h3>
+        <div id="adminList">
+            <ul>
+                <li th:each="admin : ${admins}">
+                    <span th:text="${admin}"></span>
+                    <div class="button-group">
+                        <form th:action="@{/editUser}" method="post">
+                            <input type="hidden" th:value="${admin.id}" name="id"/>
+                            <button class="edit-button" type="submit" onclick="editUser(this.parentElement, this.getAttribute('data-id'))" data-id="${admin.id}">✏️</button>
+                        </form>
+                        <form th:action="@{/deleteUser}" method="post">
+                            <input type="hidden" th:value="${admin.id}" name="id"/>
+                            <button class="remove-button" type="submit">❌</button>
+                        </form>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <!-- LISTAR PROFESSORS -->
+        <h3 onclick="toggleProfessorList()">Professores <a href="/register" class="register-button">Adicionar Professor</a></h3>
+        <div id="professorList">
+            <ul>
+                <li th:each="userProfessor : ${usersProfessors}">
+                    <span th:text="${userProfessor}"></span>
+                    <div class="button-group">
+                        <form th:action="@{/editUser}" method="post">
+                            <input type="hidden" th:value="${userProfessor.id}" name="id"/>
+                            <button class="edit-button" type="submit" onclick="editUser(this.parentElement, this.getAttribute('data-id'))" data-id="${userProfessor.id}">✏️</button>
+                        </form>
+                        <form th:action="@{/deleteUser}" method="post">
+                            <input type="hidden" th:value="${userProfessor.id}" name="id"/>
+                            <button class="remove-button" type="submit">❌</button>
+                        </form>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <!-- LISTAR ALUNOS -->
+        <h3 onclick="toggleAlunoList()">Alunos <a href="/register" class="register-button">Adicionar Aluno</a></h3>
+        <div id="alunoList">
+            <ul>
+                <li th:each="userAluno : ${usersAlunos}">
+                    <span th:text="${userAluno}"></span>
+                    <div class="button-group">
+                        <form th:action="@{/editUser}" method="post">
+                            <input type="hidden" th:value="${userAluno.id}" name="id"/>
+                            <button class="edit-button" type="submit" onclick="editUser(this.parentElement, this.getAttribute('data-id'))" data-id="${userAluno.id}">✏️</button>
+                        </form>
+                        <form th:action="@{/deleteUser}" method="post">
+                            <input type="hidden" th:value="${userAlunoid}" name="id"/>
+                            <button class="remove-button" type="submit">❌</button>
+                        </form>
+                    </div>
+                </li>
+            </ul>
         </div>
 
         <!-- LISTAR DISCIPLINAS -->
@@ -392,9 +499,10 @@
                 <li th:each="discipline : ${disciplines}">
                     <span th:text="${discipline}"></span>
                     <div class="button-group">
-                        <form action="">
-                            <button class="ver-curso-button">+ Professor</button>
-                        </form>
+                        <form th:action="@{/addProfToDiscipline}" method="post" id="addProfToDiscipline">
+                            <input type="hidden" th:value="${discipline.id}" name="disciplineId"/>
+                            <button class="addProf-button" type="submit" onclick="addAlunoToCourse(this.parentElement, this.getAttribute('data-id'))" data-id="${discipline.id}">+ Professor</button>
+                        </form>    
                         <form th:action="@{/editDiscipline}" method="post" id="editDisciplineForm">
                             <input type="hidden" th:value="${discipline.id}" name="id"/>
                             <button class="edit-button" type="submit" onclick="editDiscipline(this.parentElement, this.getAttribute('data-id'))" data-id="${discipline.id}">✏️</button>

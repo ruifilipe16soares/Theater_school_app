@@ -266,6 +266,22 @@ public class DatabaseConnection {
         }
     }
 
+    //getUser by id
+    public User getUserById(int id) throws SQLException {
+        String query = String.format("SELECT * FROM dbo.Users WHERE id = %d", id);
+        ResultSet rs = statement.executeQuery(query);
+        if (rs.next()) {
+            String name = rs.getString("name");
+            int age = rs.getInt("age");
+            String usertype = rs.getString("usertype");
+            String email = rs.getString("email");
+            String password = rs.getString("password");
+            return new User(name, age, usertype, email, password, id);
+        } else {
+            return null;
+        }
+    }
+
     public static void main(String[] args) throws SQLException {
         DatabaseConnection db = new DatabaseConnection();
         Connection connection = db.getConnection();
@@ -285,7 +301,12 @@ public class DatabaseConnection {
         //System.out.println("o bolean c " + c);
         db.getUsers();
         //db.updateUser(5, "bbb", 0, "", "", "");
-        //db.deleteUser(1);
+        db.deleteUser(2);
+        db.deleteUser(3);
+        db.deleteUser(4);
+        db.deleteUser(7);
+        db.deleteUser(8);
+        db.deleteUser(9);
         //sdb.deleteStudent(8);
         //print ao getusers
         System.out.println(db.usersToString());
