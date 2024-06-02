@@ -134,7 +134,7 @@ public class WebController {
         Connection connection = db.getConnection();
         String userType = db.checkType(email, password);
         if (userType != null) {
-            if (userType.equals("admin")) {
+            if (userType.equals("Admin")) {
                 return new ModelAndView("redirect:/admin");
             } else if (userType.equals("Professor")) {
                 return new ModelAndView("redirect:/student");
