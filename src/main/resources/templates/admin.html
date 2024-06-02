@@ -355,6 +355,26 @@
             form.submit();
         }
 
+        //deve pedir através de um prompt o id da disciplina e adicionar ao curso
+        function addDisciplineToCourse(form, courseId) {
+            var idField = document.createElement("input");
+            idField.type = "hidden";
+            idField.name = "courseId";
+            idField.value = courseId;
+            form.appendChild(idField);
+
+            var disciplineId = prompt("Enter discipline id:");
+            disciplineId = (disciplineId && !isNaN(disciplineId)) ? parseInt(disciplineId) : 0;
+
+            var disciplineIdField = document.createElement("input");
+            disciplineIdField.type = "hidden";
+            disciplineIdField.name = "disciplineId";
+            disciplineIdField.value = disciplineId;
+            form.appendChild(disciplineIdField);
+
+            form.submit();
+        }
+
         //deve pedir através de um prompt o id do professor e adicionar à disciplina
         //addProfToDiscipline(disciplineID)
         function addProfToDiscipline(form, disciplineId) {
@@ -532,7 +552,12 @@
                         <form th:action="@{/addAlunoToCourse}" method="post" id="addAlunoToCourseForm">
                             <input type="hidden" th:value="${course.id}" name="courseId"/>
                             <button class="addAluno-button" type="submit" onclick="addAlunoToCourse(this.parentElement, this.getAttribute('data-id'))" data-id="${course.id}">+ Aluno</button>
-                        </form>                        
+                        </form>         
+                        <!-- form para adicionar disiciplina a curso -->
+                        <form th:action="@{/addDisciplineToCourse}" method="post" id="addDisciplineToCourseForm">
+                            <input type="hidden" th:value="${course.id}" name="courseId"/>
+                            <button class="addProf-button" type="submit" onclick="addDisciplineToCourse(this.parentElement, this.getAttribute('data-id'))" data-id="${course.id}">+ Disciplina</button>
+                        </form>               
                         <form th:action="@{/editCourse}" method="post" id="editCourseForm">
                             <input type="hidden" th:value="${course.id}" name="id"/>
                             <button class="edit-button" type="submit" onclick="editCourse(this.parentElement, this.getAttribute('data-id'))" data-id="${course.id}">✏️</button>

@@ -289,6 +289,21 @@ public class WebController {
         return "redirect:/admin";
     }
 
+    //add discipline to course
+    @PostMapping("/addDisciplineToCourse")
+    public String addDisciplineToCourse(@RequestParam int courseId, @RequestParam int disciplineId) {
+        System.out.println("Received Discipline ID: " + disciplineId + " Course ID: " + courseId); // Log do ID recebido
+        DatabaseConnection db = new DatabaseConnection();
+        db.getConnection();
+        try {
+            DisciplineDB disciplineDB = new DisciplineDB(db.getConnection());
+            disciplineDB.addCourseDiscipline(courseId, disciplineId);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }   
+        return "redirect:/admin";
+    }
+
     //add professor to discipline
     @PostMapping("/addProfToDiscipline")
     public String addProfToDiscipline(@RequestParam int disciplineId, @RequestParam int professorId) {
