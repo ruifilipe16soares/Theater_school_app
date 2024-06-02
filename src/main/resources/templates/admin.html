@@ -484,7 +484,7 @@
                             <button class="edit-button" type="submit" onclick="editUser(this.parentElement, this.getAttribute('data-id'))" data-id="${userAluno.id}">✏️</button>
                         </form>
                         <form th:action="@{/deleteUser}" method="post">
-                            <input type="hidden" th:value="${userAlunoid}" name="id"/>
+                            <input type="hidden" th:value="${userAluno.id}" name="id"/>
                             <button class="remove-button" type="submit">❌</button>
                         </form>
                     </div>
