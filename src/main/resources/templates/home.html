@@ -2,7 +2,6 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Escola de Teatro</title>
-<!--     <link rel="stylesheet" type="text/css" href="style.css"> -->
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -17,12 +16,20 @@
             text-align: center;
             position: relative;
         }
-        header a {
+        nav {
+            background-color: #444;
+            color: #fff;
+            padding: 10px 0;
+            text-align: center;
+        }
+        nav a {
             color: #fff;
             text-decoration: none;
-            position: absolute;
-            top: 10px;
-            right: 20px;
+            margin: 0 15px;
+            font-weight: bold;
+        }
+        header a, nav a:hover {
+            color: #ddd;
         }
         .container {
             width: 60%;
@@ -78,6 +85,10 @@
         <h1>Escola de Teatro</h1>
         <a href="/login">Login</a>
     </header>
+    <nav>
+        <a href="/">Home</a>
+        <a href="/professors">Professores</a>
+    </nav>
     <div class="container">
         <section class="courses">
             <h2>Nossos Cursos</h2>
@@ -87,7 +98,7 @@
                     
                     <form th:action="@{/courseDetails}" method="post">
                     <input type="hidden" th:value="${course.id}" name="courseId"/>
-                    <button class="ver-curso-button" type="submit" onclick="courseDetails(this.parentElement, this.getAttribute(data-id))">Ver</button>
+                    <button class="ver-curso-button" type="submit" onclick="courseDetails(this.parentElement, this.getAttribute('data-id'))">Ver</button>
                 </form>
                 
                 </li>

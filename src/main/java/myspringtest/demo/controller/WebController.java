@@ -34,7 +34,7 @@ public class WebController {
 
     @GetMapping("/")
     public ModelAndView home() throws SQLException {
-                DatabaseConnection db = new DatabaseConnection();
+        DatabaseConnection db = new DatabaseConnection();
         db.getConnection();
         CourseDB courseDB = new CourseDB(db.getConnection());
         List<Course> courses = courseDB.getCourses();
@@ -43,6 +43,19 @@ public class WebController {
         modelAndView.addObject("courses", courses);
         return modelAndView;
     }
+    
+    @GetMapping("/professors")
+    public ModelAndView professors() throws SQLException {
+        DatabaseConnection db = new DatabaseConnection();
+        db.getConnection();
+        ProfessorDB professorDB = new ProfessorDB(db.getConnection());
+        List<User> professors = professorDB.getUserProfessors();
+
+        ModelAndView modelAndView = new ModelAndView("professors");
+        modelAndView.addObject("professors", professors);
+        return modelAndView;
+    }
+
 
     @GetMapping("/register")
     public String register() {
@@ -81,7 +94,7 @@ public class WebController {
             @RequestParam String email, @RequestParam String password) throws SQLException {
         DatabaseConnection db = new DatabaseConnection();
         Connection connection = db.getConnection();
-        db.addUser(name, age, "admin", email, password);
+        db.addUser(name, age, "Admin", email, password);
 
         return new ModelAndView("redirect:/admin");
     }

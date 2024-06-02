@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import myspringtest.demo.Professor;
+import myspringtest.demo.User;
 
 public class ProfessorDB {
 
@@ -86,11 +87,11 @@ public class ProfessorDB {
         }
     }
 
-        public synchronized List<Professor> getProfessorsByDiscipline(int disciplineId) throws SQLException {
+    public synchronized List<Professor> getProfessorsByDiscipline(int disciplineId) throws SQLException {
         List<Professor> professors = new ArrayList<>();
         String query = "SELECT p.* FROM dbo.Professor p " +
-                       "JOIN dbo.Professor_Discipline pd ON p.id = pd.professor_id " +
-                       "WHERE pd.discipline_id = ?";
+                "JOIN dbo.Professor_Discipline pd ON p.id = pd.professor_id " +
+                "WHERE pd.discipline_id = ?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setInt(1, disciplineId);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -108,6 +109,28 @@ public class ProfessorDB {
 
         return professors;
     }
+public synchronized List<User> getUserProfessors() throws SQLException {
+    List<User> users = new ArrayList<>();
+    String query = "SELECT u.* FROM dbo.Users u " +
+                   "JOIN dbo.Professor p ON u.id = p.id_user";
+    try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        while (resultSet.next()) {
+            int id = resultSet.getInt("id");
+            String name = resultSet.getString("name");
+            int age = resultSet.getInt("age");
+            String userType = resultSet.getString("usertype");
+            String email = resultSet.getString("email");
+            String password = resultSet.getString("password");
+
+            User user = new User(id, name, age, userType, email, password);
+            users.add(user);
+        }
+    }
+
+    return users;
+}
 
     public static void main(String[] args) throws SQLException {
         DatabaseConnection db = new DatabaseConnection();
@@ -125,6 +148,14 @@ public class ProfessorDB {
 
         // Delete a professor
         // professorDB.deleteProfessor(1);
+
+
+        List<User> profess = professorDB.getUserProfessors();
+        for (User professor : profess) {
+            System.out.println(professor.toString());
+        }
+
+System.out.println("Professors by discipline:");
 
         // List all professors
         List<Professor> professors = professorDB.getProfessors();

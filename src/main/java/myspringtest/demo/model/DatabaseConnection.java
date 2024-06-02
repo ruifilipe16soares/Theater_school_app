@@ -299,12 +299,8 @@ public class DatabaseConnection {
         //System.out.println("o bolean c " + c);
         db.getUsers();
         //db.updateUser(5, "bbb", 0, "", "", "");
-        db.deleteUser(2);
-        db.deleteUser(3);
-        db.deleteUser(4);
-        db.deleteUser(7);
-        db.deleteUser(8);
-        db.deleteUser(9);
+        db.deleteUser(10);
+
         //sdb.deleteStudent(8);
         //print ao getusers
         System.out.println(db.usersToString());
