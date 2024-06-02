@@ -135,8 +135,8 @@ public class CourseDB {
     public synchronized List<Discipline> getDisciplinesByCourse(int courseId) throws SQLException {
         List<Discipline> disciplines = new ArrayList<>();
         String query = "SELECT d.* FROM dbo.Discipline d " +
-                       "JOIN dbo.Course_Discipline cd ON d.id = cd.discipline_id " +
-                       "WHERE cd.course_id = ?";
+                "JOIN dbo.Course_Discipline cd ON d.id = cd.discipline_id " +
+                "WHERE cd.course_id = ?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setInt(1, courseId);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -154,6 +154,29 @@ public class CourseDB {
         return disciplines;
     }
 
+    public synchronized Course getCourse(int id) {
+        String query = "SELECT * FROM dbo.Courses WHERE id = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setInt(1, id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                int courseId = resultSet.getInt("id");
+                String name = resultSet.getString("name");
+                String description = resultSet.getString("description");
+                float price = resultSet.getFloat("price");
+                int duration = resultSet.getInt("duration");
+                int normalTime = resultSet.getInt("normal_time");
+                Course course = new Course(courseId, name, description, price, duration, normalTime);
+                System.out.println(course.toString());
+                return course;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public static void main(String[] args) throws SQLException {
         DatabaseConnection db = new DatabaseConnection();
         Connection connection = db.getConnection();
@@ -163,23 +186,27 @@ public class CourseDB {
         // courseDB.addCourse("Jazz Dance", "Learn the fundamentals of Jazz dance", 120.00f, 30, 60);
 
         // Update a course
-        courseDB.updateCourse(5, "Ballet", "Ballet", 180.00f, 45, 90);
+        //courseDB.updateCourse(5, "Ballet", "Ballet", 180.00f, 45, 90);
 
         // Remove a course
-        courseDB.deleteCourse(2);
+        //courseDB.deleteCourse(2);
+
+        courseDB.getCourse(1);
+
 
         // List all courses
         List<Course> courses = courseDB.getCourses();
         for (Course course : courses) {
             System.out.println(course.toString());
         }
-
+System.out.println("Disciplines");
         // List disciplines by course
         int courseId = 1; // Example course ID
         List<Discipline> disciplines = courseDB.getDisciplinesByCourse(courseId);
         for (Discipline discipline : disciplines) {
             System.out.println(discipline.toString());
         }
+        
 
         db.closeConnection(connection); // Ensure to close the connection after use
     }

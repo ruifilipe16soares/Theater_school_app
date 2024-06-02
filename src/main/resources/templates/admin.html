@@ -523,9 +523,12 @@
                 <li th:each="course : ${courses}">
                     <span th:text="${course}"></span>
                     <div class="button-group">
-                        <form action="">
-                            <button class="ver-curso-button">Ver</button>
-                        </form>
+
+                <form th:action="@{/courseDetails}" method="post">
+                    <input type="hidden" th:value="${course.id}" name="courseId"/>
+                    <button class="ver-curso-button" type="submit" onclick="courseDetails(this.parentElement, this.getAttribute(data-id))">Ver</button>
+                </form>
+                
                         <form th:action="@{/addAlunoToCourse}" method="post" id="addAlunoToCourseForm">
                             <input type="hidden" th:value="${course.id}" name="courseId"/>
                             <button class="addAluno-button" type="submit" onclick="addAlunoToCourse(this.parentElement, this.getAttribute('data-id'))" data-id="${course.id}">+ Aluno</button>

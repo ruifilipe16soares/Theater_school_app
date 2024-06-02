@@ -33,8 +33,15 @@ public class WebController {
     }
 
     @GetMapping("/")
-    public String home() {
-        return "home";
+    public ModelAndView home() throws SQLException {
+                DatabaseConnection db = new DatabaseConnection();
+        db.getConnection();
+        CourseDB courseDB = new CourseDB(db.getConnection());
+        List<Course> courses = courseDB.getCourses();
+
+        ModelAndView modelAndView = new ModelAndView("home");
+        modelAndView.addObject("courses", courses);
+        return modelAndView;
     }
 
     @GetMapping("/register")
@@ -237,8 +244,10 @@ public class WebController {
     }
 
     @PostMapping("/editCourse")
-    public String editCourse(@RequestParam int id, @RequestParam String name, @RequestParam String description, @RequestParam float price, @RequestParam int duration, @RequestParam int normalTime) {
-        System.out.println("Received ID: " + id + " Name: " + name + " Description: " + description + " Price: " + price + " Duration: " + duration + " NormalTime: " + normalTime); // Log do ID recebido
+    public String editCourse(@RequestParam int id, @RequestParam String name, @RequestParam String description,
+            @RequestParam float price, @RequestParam int duration, @RequestParam int normalTime) {
+        System.out.println("Received ID: " + id + " Name: " + name + " Description: " + description + " Price: " + price
+                + " Duration: " + duration + " NormalTime: " + normalTime); // Log do ID recebido
         DatabaseConnection db = new DatabaseConnection();
         db.getConnection();
         try {
@@ -249,6 +258,8 @@ public class WebController {
         }
         return "redirect:/admin";
     }
+    
+
 
     //add aluno to course
     @PostMapping("/addAlunoToCourse")
@@ -279,5 +290,27 @@ public class WebController {
         }
         return "redirect:/admin";
     }
+
+@PostMapping("/courseDetails")
+public ModelAndView courseDetails(@RequestParam int courseId) throws SQLException {
+    System.out.println(" Course ID: " + courseId); // Log dos IDs recebidos
+
+    DatabaseConnection db = new DatabaseConnection();
+    db.getConnection();
+
+    CourseDB courseDB = new CourseDB(db.getConnection());
+    StudentDB studentDB = new StudentDB(db.getConnection());
+
+    Course course = courseDB.getCourse(courseId);
+    List<Discipline> disciplines = courseDB.getDisciplinesByCourse(courseId); // Presumindo que você tenha um método para obter disciplinas
+    List<User> user = studentDB.getUserStudentsByCourse(courseId);
+
+    ModelAndView mav = new ModelAndView("courseDetails");
+    mav.addObject("course", course);
+    mav.addObject("disciplines", disciplines);
+    mav.addObject("user", user);
+
+    return mav;
+}
 
 }

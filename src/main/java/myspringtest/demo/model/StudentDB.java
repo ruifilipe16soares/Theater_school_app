@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import myspringtest.demo.Student;
+import myspringtest.demo.User;
 
 public class StudentDB {
 
@@ -100,7 +101,31 @@ public class StudentDB {
 
         return students;
     }
-    
+    public synchronized List<User> getUserStudentsByCourse(int courseId) throws SQLException {
+    List<User> users = new ArrayList<>();
+    String query = "SELECT u.* FROM dbo.Users u " +
+                   "JOIN dbo.Student s ON u.id = s.id_user " +
+                   "JOIN dbo.Student_Course sc ON s.id = sc.student_id " +
+                   "WHERE sc.course_id = ?";
+    try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        preparedStatement.setInt(1, courseId);
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        while (resultSet.next()) {
+            int id = resultSet.getInt("id");
+            String name = resultSet.getString("name");
+            int age = resultSet.getInt("age");
+            String userType = resultSet.getString("usertype");
+            String email = resultSet.getString("email");
+            String password = resultSet.getString("password");
+
+            User user = new User(id, name, age, userType, email, password);
+            users.add(user);
+        }
+    }
+
+    return users;
+}
     public synchronized void deleteStudent_ProfessorByIdUser(int id_user) throws SQLException {
     // Obter o ID do professor pelo id_user
     String getProfessorIdQuery = "SELECT id FROM dbo.Professor WHERE id_user = ?";

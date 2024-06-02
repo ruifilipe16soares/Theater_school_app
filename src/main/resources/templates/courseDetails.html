@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Detalhes do Curso</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .container {
+            width: 80%;
+            margin: 30px auto;
+            overflow: hidden;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        p {
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 th:text="${course.name}">Course Name</h1>
+        <p><strong>Description:</strong> <span th:text="${course.description}">Course Description</span></p>
+        <p><strong>Price:</strong> <span th:text="${course.price}">Course Price</span></p>
+        <p><strong>Duration:</strong> <span th:text="${course.duration}">Course Duration</span></p>
+        <p><strong>Normal Time:</strong> <span th:text="${course.normalTime}">Course Normal Time</span></p>
+
+        <h2>Disciplines</h2>
+        <ul>
+            <li th:each="discipline : ${disciplines}">
+                <span th:text="${discipline.name}">Discipline Name</span> - <span th:text="${discipline.description}">Discipline Description</span>
+            </li>
+        </ul>
+
+        <h2>Students</h2>
+        <ul>
+            <li th:each="user : ${user}">
+                <span th:text="${user.name}">Student Name</span> - <span th:text="${user.email}">Student Email</span>
+            </li>
+        </ul>
+    </div>
+</body>
+</html>

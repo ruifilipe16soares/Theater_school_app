@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Escola de Teatro</title>
 <!--     <link rel="stylesheet" type="text/css" href="style.css"> -->
@@ -82,11 +82,15 @@
         <section class="courses">
             <h2>Nossos Cursos</h2>
             <ul>
-                <li>Curso de Interpretação</li>
-                <li>Curso de Expressão Corporal</li>
-                <li>Curso de Voz e Dicção</li>
-                <li>Curso de Teatro Musical</li>
-                <li>Curso de Dramaturgia</li>
+                <li th:each="course : ${courses}">
+                    <span th:text="${course.name}"></span> - <span th:text="${course.description}"></span>
+                    
+                    <form th:action="@{/courseDetails}" method="post">
+                    <input type="hidden" th:value="${course.id}" name="courseId"/>
+                    <button class="ver-curso-button" type="submit" onclick="courseDetails(this.parentElement, this.getAttribute(data-id))">Ver</button>
+                </form>
+                
+                </li>
             </ul>
         </section>
         <section class="about">
