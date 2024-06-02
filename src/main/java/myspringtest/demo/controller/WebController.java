@@ -74,9 +74,7 @@ public class WebController {
             @RequestParam String email, @RequestParam String password) throws SQLException {
         DatabaseConnection db = new DatabaseConnection();
         Connection connection = db.getConnection();
-        int total = db.getCountUsers();
-        total++;
-        db.addUser(1, name, age, "Admin", email, password);
+        db.addUser(name, age, "admin", email, password);
 
         return new ModelAndView("redirect:/admin");
     }
@@ -87,10 +85,9 @@ public class WebController {
         DatabaseConnection db = new DatabaseConnection();
         StudentDB studentDB = new StudentDB(db.getConnection());
         Connection connection = db.getConnection();
-        int total = db.getCountUsers();
-        total++;
-        db.addUser(1, name, age, "Aluno", email, password);
-        studentDB.addStudent(total, entryYear);
+            int numberid = db.addUser(name, age, "Student", email, password);
+            System.out.println("ID: " + numberid);
+            studentDB.addStudent(numberid, entryYear);
 
         return new ModelAndView("redirect:/admin");
     }
@@ -100,10 +97,9 @@ public class WebController {
         DatabaseConnection db = new DatabaseConnection();
         Connection connection = db.getConnection();
         ProfessorDB professorDB = new ProfessorDB(db.getConnection());
-        int total = db.getCountUsers();
-        total++;
-        db.addUser(1, name, age, "Professor", email, password);
-        professorDB.addProfessor(total, salary, entry_date, education);
+        int numberid = db.addUser(name, age, "Professor", email, password);
+        System.out.println("ID: " + numberid);
+        professorDB.addProfessor(numberid, salary, entry_date, education); 
         return new ModelAndView("redirect:/admin");
     }
 
@@ -163,7 +159,7 @@ public class WebController {
 
         List<User> usersAlunos = new ArrayList<>();
         for (User user : users) {
-            if (user.getUserType().equals("Aluno")) {
+            if (user.getUserType().equals("Student")) {
                 usersAlunos.add(user);
             }
         }
@@ -187,7 +183,8 @@ public class WebController {
         System.out.println("Received ID: " + id); // Log do ID recebido
         DatabaseConnection db = new DatabaseConnection();
         db.getConnection();
-        db.deleteUser(id);
+        StudentDB studentDB = new StudentDB(db.getConnection());
+        studentDB.deleteStudent_ProfessorByIdUser(id);
         return "redirect:/admin";
     }
 

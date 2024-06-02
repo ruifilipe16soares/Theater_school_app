@@ -83,8 +83,8 @@ public class StudentDB {
     public synchronized List<Student> getStudentsByCourse(int courseId) throws SQLException {
         List<Student> students = new ArrayList<>();
         String query = "SELECT s.* FROM dbo.Student s " +
-                       "JOIN dbo.Student_Course sc ON s.id = sc.student_id " +
-                       "WHERE sc.course_id = ?";
+                "JOIN dbo.Student_Course sc ON s.id = sc.student_id " +
+                "WHERE sc.course_id = ?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setInt(1, courseId);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -100,6 +100,82 @@ public class StudentDB {
 
         return students;
     }
+    
+    public synchronized void deleteStudent_ProfessorByIdUser(int id_user) throws SQLException {
+    // Obter o ID do professor pelo id_user
+    String getProfessorIdQuery = "SELECT id FROM dbo.Professor WHERE id_user = ?";
+    int professorId = -1;
+    try (PreparedStatement preparedStatement = connection.prepareStatement(getProfessorIdQuery)) {
+        preparedStatement.setInt(1, id_user);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        if (resultSet.next()) {
+            professorId = resultSet.getInt("id");
+        }
+    }
+
+    // Obter o ID do estudante pelo id_user
+    String getStudentIdQuery = "SELECT id FROM dbo.Student WHERE id_user = ?";
+    int studentId = -1;
+    try (PreparedStatement preparedStatement = connection.prepareStatement(getStudentIdQuery)) {
+        preparedStatement.setInt(1, id_user);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        if (resultSet.next()) {
+            studentId = resultSet.getInt("id");
+        }
+    }
+
+    // Deletar da tabela Professor_Discipline se professorId foi encontrado
+    if (professorId != -1) {
+        String deleteProfessorDisciplineQuery = "DELETE FROM dbo.Professor_Discipline WHERE professor_id = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(deleteProfessorDisciplineQuery)) {
+            preparedStatement.setInt(1, professorId);
+            preparedStatement.executeUpdate();
+        }
+    }
+
+    // Deletar da tabela Student_Course se studentId foi encontrado
+    if (studentId != -1) {
+        String deleteStudentCourseQuery = "DELETE FROM dbo.Student_Course WHERE student_id = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(deleteStudentCourseQuery)) {
+            preparedStatement.setInt(1, studentId);
+            preparedStatement.executeUpdate();
+        }
+    }
+
+
+    // Deletar da tabela Student se studentId foi encontrado
+    if (studentId != -1) {
+        String deleteStudentQuery = "DELETE FROM dbo.Student WHERE id = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(deleteStudentQuery)) {
+            preparedStatement.setInt(1, studentId);
+            preparedStatement.executeUpdate();
+        }
+    }
+
+    // Deletar da tabela Professor se professorId foi encontrado
+    if (professorId != -1) {
+        String deleteProfessorQuery = "DELETE FROM dbo.Professor WHERE id = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(deleteProfessorQuery)) {
+            preparedStatement.setInt(1, professorId);
+            preparedStatement.executeUpdate();
+        }
+    }
+
+    // Finalmente, deletar da tabela Users
+    String deleteUserQuery = "DELETE FROM dbo.Users WHERE id = ?";
+    try (PreparedStatement preparedStatement = connection.prepareStatement(deleteUserQuery)) {
+        preparedStatement.setInt(1, id_user);
+        int affectedRows = preparedStatement.executeUpdate();
+        if (affectedRows == 0) {
+            System.out.println("No user found with id: " + id_user);
+        } else {
+            System.out.println("User with id: " + id_user + " was deleted successfully.");
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+        System.out.println("Error occurred while deleting user with id: " + id_user);
+    }
+}
 
     public static void main(String[] args) throws SQLException {
         DatabaseConnection db = new DatabaseConnection();

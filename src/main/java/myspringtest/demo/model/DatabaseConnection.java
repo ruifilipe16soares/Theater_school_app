@@ -151,27 +151,25 @@ public class DatabaseConnection {
             return users;
         }
         
-        public void addUser(int id, String name, int age, String usertype, String email, String password) throws SQLException {
-            boolean userAdded = false;
-    
-            while (!userAdded) {
-                try {
-                    Statement statement = connection.createStatement();
-                    String query = String.format(
-                            "INSERT INTO dbo.Users (id, name, age, usertype, email, password) VALUES (%d, '%s', %d, '%s', '%s', '%s')",
-                            id, name, age, usertype, email, password);
-                    statement.executeUpdate(query);
-                    userAdded = true; // If insertion is successful, exit the loop
-                } catch (SQLException e) {
-                    // Check if the error is due to a duplicate key
-                    if (e.getMessage().contains("Violation of PRIMARY KEY constraint")) {
-                        id++; // Increment the ID and try again
-                    } else {
-                        throw e; // If it's a different error, rethrow it
-                    }
-                }
+        public synchronized int addUser(String name, int age, String usertype, String email, String password) throws SQLException {
+    String query = "INSERT INTO dbo.Users (name, age, usertype, email, password) VALUES (?, ?, ?, ?, ?)";
+    try (PreparedStatement preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+        preparedStatement.setString(1, name);
+        preparedStatement.setInt(2, age);
+        preparedStatement.setString(3, usertype);
+        preparedStatement.setString(4, email);
+        preparedStatement.setString(5, password);
+        preparedStatement.executeUpdate();
+
+        try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
+            if (generatedKeys.next()) {
+                return generatedKeys.getInt(1);
+            } else {
+                throw new SQLException("Creating user failed, no ID obtained.");
             }
         }
+    }
+}
 
         public void deleteUser(int id) {
             String query = "DELETE FROM dbo.Users WHERE id = ?";
