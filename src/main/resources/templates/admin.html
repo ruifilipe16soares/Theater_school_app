@@ -499,10 +499,10 @@
                 <li th:each="discipline : ${disciplines}">
                     <span th:text="${discipline}"></span>
                     <div class="button-group">
-                        <form th:action="@{/addProfToDiscipline}" method="post" id="addProfToDiscipline">
+<!--                         <form th:action="@{/addProfToDiscipline}" method="post" id="addProfToDiscipline">
                             <input type="hidden" th:value="${discipline.id}" name="disciplineId"/>
                             <button class="addProf-button" type="submit" onclick="addAlunoToCourse(this.parentElement, this.getAttribute('data-id'))" data-id="${discipline.id}">+ Professor</button>
-                        </form>    
+                        </form>    --> 
                         <form th:action="@{/editDiscipline}" method="post" id="editDisciplineForm">
                             <input type="hidden" th:value="${discipline.id}" name="id"/>
                             <button class="edit-button" type="submit" onclick="editDiscipline(this.parentElement, this.getAttribute('data-id'))" data-id="${discipline.id}">✏️</button>
